@@ -3,6 +3,7 @@
 #include "Types.h"
 
 #include <QHash>
+#include <QPersistentModelIndex>
 #include <QPointer>
 #include <QSet>
 #include <QWidget>
@@ -13,7 +14,7 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QStackedWidget;
-class QToolButton;
+class QTimer;
 
 namespace packix::ui {
 
@@ -45,6 +46,10 @@ public:
     void dropIn(const QStringList& paths, const QString& folder);
     void openItem(const QModelIndex& index);
     void quickLook();
+    void deleteSelected();
+
+protected:
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
     void buildUi();
@@ -61,7 +66,6 @@ private:
     QString unpackToTemp(const QStringList& items, const QString& prefix);
 
     void extractSelected();
-    void deleteSelected();
     void setPassword();
     void changePassword();
     void removePassword();
@@ -102,6 +106,8 @@ private:
     QHash<QString, std::pair<QString, QString>> m_opened;   // file -> (workDir, relPath)
     QSet<QString> m_pendingEdits;
     bool m_busy = false;
+    QTimer* m_hoverTimer = nullptr;
+    QPersistentModelIndex m_hoverIndex;
 };
 
 } // namespace packix::ui

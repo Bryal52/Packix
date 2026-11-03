@@ -65,7 +65,8 @@ enable_testing()
 add_executable(tst_core tests/tst_core.cpp)
 target_link_libraries(tst_core PRIVATE packix_core Qt6::Test)
 add_test(NAME core COMMAND tst_core)
-add_executable(tst_ui tests/tst_ui.cpp)
+add_executable(tst_ui tests/tst_ui.cpp app/ArchiveModel.cpp app/ArchiveWindow.cpp app/Preview.cpp)
+target_include_directories(tst_ui PRIVATE app)
 target_link_libraries(tst_ui PRIVATE packix_ui Qt6::Test)
 target_compile_definitions(tst_ui PRIVATE PACKIX_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 add_test(NAME ui COMMAND tst_ui)
@@ -84,6 +85,7 @@ set(PACKIX_APP_SOURCES
     app/ArchiveModel.cpp app/ArchiveModel.h
     app/ArchiveWindow.cpp app/ArchiveWindow.h
     app/SettingsWindow.cpp app/SettingsWindow.h
+    app/Preview.cpp app/Preview.h
 )
 
 if(APPLE)
@@ -138,6 +140,6 @@ target_compile_definitions(Packix PRIVATE PACKIX_VERSION="${PROJECT_VERSION}")
 target_link_libraries(Packix PRIVATE packix_ui)
 
 # Development helper: renders windows to PNG for a look at the design.
-add_executable(previews EXCLUDE_FROM_ALL tools/previews.cpp app/ArchiveModel.cpp app/ArchiveWindow.cpp)
+add_executable(previews EXCLUDE_FROM_ALL tools/previews.cpp app/ArchiveModel.cpp app/ArchiveWindow.cpp app/Preview.cpp)
 target_include_directories(previews PRIVATE app)
 target_link_libraries(previews PRIVATE packix_ui)

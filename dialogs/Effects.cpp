@@ -19,9 +19,15 @@ namespace packix::ui {
 
 void shake(QWidget* window)
 {
-    if (!window || Theme::reduceMotion())
+    if (window)
+        shakeWidget(window->window());
+}
+
+void shakeWidget(QWidget* w)
+{
+    if (!w || Theme::reduceMotion() || w->property("packixShaking").toBool())
         return;
-    QWidget* w = window->window();
+    w->setProperty("packixShaking", true);
     const int ms = Theme::get().motion("shakeMs", 250);
     const int count = Theme::get().motion("shakeCount", 3);
     const int amp = Theme::get().motion("shakeAmplitude", 8);
@@ -35,7 +41,10 @@ void shake(QWidget* window)
         const double dx = std::sin(t * count * 2 * M_PI) * amp * (1.0 - t);   // dies out
         w->move(origin + QPoint(int(std::lround(dx)), 0));
     });
-    QObject::connect(anim, &QVariantAnimation::finished, w, [w, origin] { w->move(origin); });
+    QObject::connect(anim, &QVariantAnimation::finished, w, [w, origin] {
+        w->move(origin);
+        w->setProperty("packixShaking", false);
+    });
     anim->start(QAbstractAnimation::DeleteWhenStopped);
 }
 

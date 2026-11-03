@@ -30,6 +30,7 @@ public:
     // Names directly inside a folder of the archive ("" = top level).
     QStringList childNames(const QString& folder) const;
     qint64 sizeOf(const QModelIndex& index) const;
+    Item itemAt(const QModelIndex& index) const;
 
     QModelIndex index(int row, int column, const QModelIndex& parent = {}) const override;
     QModelIndex parent(const QModelIndex& child) const override;

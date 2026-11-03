@@ -3,12 +3,14 @@
 #include "Archiver.h"
 
 #include <QDialog>
+#include <QPointF>
 
 class QComboBox;
-class QFormLayout;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+class QToolButton;
+class QVariantAnimation;
 
 namespace packix::ui {
 
@@ -25,23 +27,36 @@ public:
 
 protected:
     void accept() override;
+    void keyPressEvent(QKeyEvent* e) override;
+    void showEvent(QShowEvent* e) override;
+    void moveEvent(QMoveEvent* e) override;
+    void resizeEvent(QResizeEvent* e) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
     void formatChanged();
+    void showPasswordFields(bool show);
     void validate();
+    void shakeProblem();
     QString fileName() const;
+    bool passwordShown() const;
 
     QStringList m_sources;
     QLineEdit* m_name;
     QComboBox* m_format;
     QComboBox* m_level;
+    QToolButton* m_help;
+    QWidget* m_passwordBox;
     QLineEdit* m_pass;
     QLineEdit* m_again;
     QLabel* m_hint;
     QLabel* m_problem;
     PathField* m_dest;
     QPushButton* m_create;
-    QFormLayout* m_form;
+    QVariantAnimation* m_fieldsAnim;
+    bool m_passwordWanted = true;
+    QPointF m_center;          // the window stays centred here while its height changes
+    bool m_movingSelf = false;
     Archiver::CreateRequest m_request;
 };
 

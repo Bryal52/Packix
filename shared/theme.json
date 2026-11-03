@@ -2,7 +2,7 @@
     "name": "Packix",
     "colors": {
         "light": {
-            "accent": "#C8645A",
+            "accent": "#D24A3E",
             "accentText": "#FFFFFF",
             "tint": "#FBF1EF",
             "selection": "#F3DCD8",
@@ -17,10 +17,12 @@
             "liquidBottom": "#C2000FEB",
             "liquidHighlight": "#FFFFFF73",
             "liquidDim": "#C9B3B0",
-            "dropZone": "#C8645A"
+            "dropZone": "#D24A3E",
+            "error": "#E0242F",
+            "titleTint": "#E5484D40"
         },
         "dark": {
-            "accent": "#D9786E",
+            "accent": "#E35B4F",
             "accentText": "#FFFFFF",
             "tint": "#2B2120",
             "selection": "#4A2E2B",
@@ -35,7 +37,9 @@
             "liquidBottom": "#D00A1AEB",
             "liquidHighlight": "#FFFFFF5C",
             "liquidDim": "#5B4846",
-            "dropZone": "#D9786E"
+            "dropZone": "#E35B4F",
+            "error": "#FF5C5C",
+            "titleTint": "#E5484D59"
         }
     },
     "metrics": {
@@ -44,7 +48,7 @@
         "lockIconSize": 12,
         "radius": 8,
         "dialogMargin": 20,
-        "thermometerHeight": 22
+        "thermometerHeight": 7
     },
     "motion": {
         "packMs": 250,
@@ -54,12 +58,13 @@
         "shakeCount": 3,
         "shakeAmplitude": 8,
         "claspMs": 200,
-        "liquidCatchUpMs": 220,
+        "liquidCatchUpMs": 600,
         "finishShineMs": 200,
         "drainMs": 200,
-        "waveHeight": 1.6,
-        "wavePeriodMs": 1800,
-        "bubbleEveryMs": 1400,
-        "notifyAfterSec": 10
+        "shimmerSpeed": 90,
+        "shimmerPeriod": 140,
+        "fieldsMs": 200,
+        "notifyAfterSec": 10,
+        "previewDelayMs": 500
     }
 }

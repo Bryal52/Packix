@@ -1,9 +1,12 @@
 #pragma once
 
+#include <QColor>
 #include <QString>
 #include <QStringList>
 
 #include <functional>
+
+class QWidget;
 
 // Everything that depends on the operating system. macOS: platform/macos; Windows and Android later.
 namespace packix::platform {
@@ -17,6 +20,8 @@ QString keys(QString text);
 
 // No Dock icon normally; while windows are open the app shows up in ⌘Tab (which needs the Dock icon).
 void setForeground(bool hasWindows);
+// Colours only the title bar strip of a window (the content keeps its own background).
+void tintTitleBar(QWidget* window, const QColor& color);
 void activate();
 
 // Passwords the user asked to remember; tried automatically on encrypted archives.

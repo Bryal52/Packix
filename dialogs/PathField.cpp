@@ -2,6 +2,7 @@
 
 #include "Icons.h"
 #include "Lang.h"
+#include "Theme.h"
 
 #include <QCompleter>
 #include <QDir>
@@ -54,7 +55,16 @@ PathField::PathField(QWidget* parent) : QWidget(parent)
     m_more->setText(QStringLiteral("⋯"));
     m_more->setToolTip(L("path.places"));
     m_more->setFocusPolicy(Qt::NoFocus);
-    m_more->setAutoRaise(true);
+    // Rounded like the field next to it, same height.
+    m_more->setFixedHeight(m_edit->sizeHint().height());
+    m_more->setMinimumWidth(m_edit->sizeHint().height() + 8);
+    const QColor edge = Theme::get().color("glassEdge");
+    m_more->setStyleSheet(QStringLiteral(
+        "QToolButton { border: 1px solid rgba(%1,%2,%3,%4); border-radius: 6px; background: palette(base);"
+        " padding: 0 6px; font-weight: bold; }"
+        "QToolButton:hover { background: palette(button); }"
+        "QToolButton:pressed { background: palette(midlight); }")
+        .arg(edge.red()).arg(edge.green()).arg(edge.blue()).arg(QString::number(qMax(0.18, edge.alphaF() * 1.6), 'f', 2)));
     connect(m_more, &QToolButton::clicked, this, &PathField::showMenu);
     connect(m_edit, &QLineEdit::textChanged, this, &PathField::changed);
 

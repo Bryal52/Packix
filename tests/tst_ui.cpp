@@ -1,4 +1,8 @@
+#include "ArchiveModel.h"
+#include "ArchiveWindow.h"
+#include "Archiver.h"
 #include "CreateDialog.h"
+#include "Jobs.h"
 #include "Lang.h"
 #include "Shared.h"
 #include "Theme.h"
@@ -11,6 +15,9 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QLineEdit>
+#include <QMessageBox>
+#include <QTimer>
+#include <QTreeView>
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QSet>
@@ -188,6 +195,95 @@ private slots:
 
         name->setText(QStringLiteral("a/b"));
         QVERIFY(!create->isEnabled());
+    }
+
+    // What the user does: select a file, press ⌫, confirm — the file must be gone.
+    void deleteFromArchiveWindow_data()
+    {
+        QTest::addColumn<QString>("format");
+        QTest::addColumn<bool>("byKey");
+        QTest::newRow("zip, key") << "zip" << true;
+        QTest::newRow("zip, button") << "zip" << false;
+        QTest::newRow("7z, key") << "7z" << true;
+        QTest::newRow("7z, button") << "7z" << false;
+    }
+
+    void deleteFromArchiveWindow()
+    {
+        QFETCH(QString, format);
+        QFETCH(bool, byKey);
+        QTemporaryDir tmp;
+        const QString src = tmp.filePath(QStringLiteral("Папка"));
+        QDir().mkpath(src);
+        for (const char* n : {"a.txt", "b.txt"}) {
+            QFile f(src + QLatin1Char('/') + QLatin1String(n));
+            QVERIFY(f.open(QIODevice::WriteOnly));
+            f.write("data");
+        }
+        Archiver::CreateRequest r;
+        r.sources = {src};
+        r.destinationDir = tmp.path();
+        r.fileName = QStringLiteral("t.") + format;
+        r.formatId = format;
+        r.levelId = QStringLiteral("normal");
+        QString archive;
+        QVERIFY(Archiver::create(r, nullptr, &archive).ok());
+
+        auto* w = new ArchiveWindow(archive);
+        QVERIFY(w->start());
+        auto* view = w->findChild<QTreeView*>();
+        auto* model = qobject_cast<ArchiveModel*>(view->model());
+        const QModelIndex file = model->indexOfPath(QStringLiteral("Папка/a.txt"));
+        QVERIFY(file.isValid());
+        view->setFocus();
+        view->selectionModel()->select(file, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        view->setCurrentIndex(file);
+
+        // Press the destructive button of the confirmation as soon as it appears.
+        bool confirmed = false;
+        QTimer poll;
+        connect(&poll, &QTimer::timeout, this, [&] {
+            for (QWidget* top : QApplication::topLevelWidgets()) {
+                auto* box = qobject_cast<QMessageBox*>(top);
+                if (!box) {
+                    for (QMessageBox* b : top->findChildren<QMessageBox*>())
+                        box = b;
+                }
+                if (!box || !box->isVisible())
+                    continue;
+                for (QAbstractButton* b : box->buttons()) {
+                    if (box->buttonRole(b) == QMessageBox::DestructiveRole) {
+                        confirmed = true;
+                        b->click();
+                        return;
+                    }
+                }
+            }
+        });
+        poll.start(50);
+        QPushButton* del = nullptr;
+        for (QPushButton* b : w->findChildren<QPushButton*>()) {
+            if (b->text() == L("archive.delete"))
+                del = b;
+        }
+        QVERIFY(del && del->isEnabled());
+        if (byKey)
+            QTest::keyClick(view, Qt::Key_Backspace);
+        else
+            del->click();
+        QTRY_VERIFY_WITH_TIMEOUT(confirmed, 5000);
+        QTRY_VERIFY_WITH_TIMEOUT(Jobs::instance().running().isEmpty(), 10000);
+        poll.stop();
+
+        ArchiveInfo info;
+        QVERIFY(Archiver::open(archive, {}, info).ok());
+        QStringList names;
+        for (const Item& i : info.items)
+            names << i.path;
+        QVERIFY2(!names.contains(QStringLiteral("Папка/a.txt")), qPrintable(names.join(QStringLiteral(", "))));
+        QTRY_VERIFY(!model->indexOfPath(QStringLiteral("Папка/a.txt")).isValid());   // the window shows it too
+        QVERIFY(model->indexOfPath(QStringLiteral("Папка/b.txt")).isValid());
+        w->close();
     }
 
     void thermometer()

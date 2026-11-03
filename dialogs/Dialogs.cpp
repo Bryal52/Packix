@@ -375,7 +375,13 @@ bool askNewPassword(QWidget* parent, const QString& archiveName, const QString& 
         e->setMinimumWidth(260);
     }
     auto* hint = hintLabel(&dlg);
-    auto* mismatch = hintLabel(&dlg, true);
+    // Saturated red, full size, right under the fields.
+    auto* mismatch = new QLabel(&dlg);
+    mismatch->setWordWrap(true);
+    QPalette mp = mismatch->palette();
+    mp.setColor(QPalette::WindowText, Theme::get().color("error"));
+    mismatch->setPalette(mp);
+    mismatch->hide();
 
     auto* cancel = new QPushButton(L("common.cancel"), &dlg);
     auto* ok = new QPushButton(change ? L("setPassword.changeButton") : L("setPassword.button"), &dlg);
@@ -402,6 +408,15 @@ bool askNewPassword(QWidget* parent, const QString& archiveName, const QString& 
     };
     QObject::connect(pass, &QLineEdit::textChanged, &dlg, validate);
     QObject::connect(again, &QLineEdit::textChanged, &dlg, validate);
+    // Shake once the typing is done, not on every key.
+    QObject::connect(again, &QLineEdit::editingFinished, &dlg, [&] {
+        if (!again->text().isEmpty() && again->text() != pass->text())
+            shakeWidget(again);
+    });
+    QObject::connect(pass, &QLineEdit::editingFinished, &dlg, [&] {
+        if (!target().acceptsPassword(pass->text()))
+            shakeWidget(pass);
+    });
     if (format)
         QObject::connect(format, &QComboBox::currentIndexChanged, &dlg, validate);
 
@@ -425,8 +440,8 @@ bool askNewPassword(QWidget* parent, const QString& archiveName, const QString& 
     if (formatNote)
         layout->addWidget(formatNote);
     layout->addLayout(form);
-    layout->addWidget(hint);
     layout->addWidget(mismatch);
+    layout->addWidget(hint);
     layout->addLayout(buttons);
     validate();
 

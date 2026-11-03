@@ -11,6 +11,7 @@
 #include "Lang.h"
 #include "LogViewer.h"
 #include "Platform.h"
+#include "Preview.h"
 #include "Temp.h"
 #include "Theme.h"
 
@@ -36,7 +37,6 @@
 #include <QStackedWidget>
 #include <QStyledItemDelegate>
 #include <QTimer>
-#include <QToolButton>
 #include <QTreeView>
 #include <QUrl>
 #include <QVBoxLayout>
@@ -173,6 +173,12 @@ protected:
             m_owner->openItem(currentIndex());
             return;
         }
+        // ⌫ / Delete in the list removes the selection (asks first).
+        if ((e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete)
+            && (e->modifiers() & ~(Qt::KeypadModifier | Qt::ControlModifier)) == Qt::NoModifier) {
+            m_owner->deleteSelected();
+            return;
+        }
         QTreeView::keyPressEvent(e);
     }
 
@@ -254,6 +260,21 @@ void ArchiveWindow::buildUi()
     header->resizeSection(ArchiveModel::Date, 128);
     header->setSectionsMovable(false);
     connect(m_view, &QTreeView::doubleClicked, this, &ArchiveWindow::openItem);
+
+    // Photo and video preview on hover, as in Folix.
+    m_view->setMouseTracking(true);
+    m_view->viewport()->installEventFilter(this);
+    m_view->installEventFilter(this);
+    m_hoverTimer = new QTimer(this);
+    m_hoverTimer->setSingleShot(true);
+    m_hoverTimer->setInterval(Theme::get().motion("previewDelayMs", 500));
+    connect(m_hoverTimer, &QTimer::timeout, this, [this] {
+        if (!m_hoverIndex.isValid() || !isActiveWindow())
+            return;
+        const Item item = m_model->itemAt(m_hoverIndex);
+        if (PreviewPopup::wants(item.path.section(QLatin1Char('/'), -1), item.isDir))
+            PreviewPopup::instance()->showFor(m_info, m_password, item, QCursor::pos());
+    });
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ArchiveWindow::updateState);
     connect(m_search, &QLineEdit::textChanged, this, [this](const QString& t) {
         m_model->setFilter(t);
@@ -340,8 +361,6 @@ void ArchiveWindow::buildUi()
         connect(s, &QShortcut::activated, this, fn);
     };
     shortcut(QKeySequence(Qt::CTRL | Qt::Key_E), [this] { extractSelected(); });
-    shortcut(QKeySequence(Qt::Key_Backspace), [this] { if (m_view->hasFocus()) deleteSelected(); });
-    shortcut(QKeySequence(Qt::Key_Delete), [this] { if (m_view->hasFocus()) deleteSelected(); });
     shortcut(QKeySequence(Qt::CTRL | Qt::Key_Backspace), [this] { deleteSelected(); });
     shortcut(QKeySequence::Find, [this] {
         m_search->setFocus();
@@ -355,6 +374,38 @@ void ArchiveWindow::buildUi()
             close();
         }
     });
+}
+
+bool ArchiveWindow::eventFilter(QObject* watched, QEvent* event)
+{
+    switch (event->type()) {
+    case QEvent::MouseMove:
+        if (watched == m_view->viewport()) {
+            const QModelIndex at = m_view->indexAt(static_cast<QMouseEvent*>(event)->position().toPoint());
+            const QModelIndex row = at.isValid() ? at.siblingAtColumn(0) : QModelIndex();
+            if (row != m_hoverIndex) {
+                PreviewPopup::instance()->hidePopup();
+                m_hoverIndex = row;
+                if (row.isValid())
+                    m_hoverTimer->start();
+                else
+                    m_hoverTimer->stop();
+            }
+        }
+        break;
+    case QEvent::Leave:
+    case QEvent::MouseButtonPress:
+    case QEvent::Wheel:
+    case QEvent::KeyPress:
+    case QEvent::FocusOut:
+        m_hoverTimer->stop();
+        m_hoverIndex = QModelIndex();
+        PreviewPopup::instance()->hidePopup();
+        break;
+    default:
+        break;
+    }
+    return QWidget::eventFilter(watched, event);
 }
 
 void ArchiveWindow::retranslate()

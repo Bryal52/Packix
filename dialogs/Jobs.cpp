@@ -63,14 +63,14 @@ Job::Job(JobSpec spec, QWidget* anchor) : QObject(&Jobs::instance()), m_spec(std
         }
     }));
 
-    // A window only for jobs that take a moment; quick ones finish unseen.
-    QTimer::singleShot(350, this, [this] {
-        if (m_progress && !m_window && Jobs::instance().m_jobs.contains(this))
+    // Every job shows its progress, even a quick one: the liquid fills and the window goes.
+    QTimer::singleShot(0, this, [this] {
+        if (!m_window && Jobs::instance().m_jobs.contains(this))
             showWindow();
     });
     auto* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Job::refresh);
-    timer->start(120);
+    timer->start(60);
 }
 
 int Job::percent() const
@@ -165,6 +165,9 @@ void Job::refresh()
 
 void Job::finished(const Status& st)
 {
+    // Done before the window even appeared: still show the bar filling up.
+    if (!m_window && st.ok())
+        showWindow();
     if (!m_window || !m_window->isVisible()) {
         close(st);
         return;

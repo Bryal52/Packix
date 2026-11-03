@@ -10,6 +10,8 @@ namespace packix::ui {
 
 // Quick sideways shake of a window, like a wrong password at the macOS login (≈250 ms).
 void shake(QWidget* window);
+// The same for one widget inside its window (a field with a wrong value).
+void shakeWidget(QWidget* widget);
 
 // File shapes slide into a box that closes: ≈250 ms over the given screen area. Never blocks anything.
 void playPackAnimation(const QRect& globalArea);

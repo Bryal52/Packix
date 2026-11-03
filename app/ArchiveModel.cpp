@@ -179,6 +179,21 @@ qint64 ArchiveModel::sizeOf(const QModelIndex& index) const
     return index.isValid() ? nodeOf(index)->size : 0;
 }
 
+Item ArchiveModel::itemAt(const QModelIndex& index) const
+{
+    Item i;
+    if (!index.isValid())
+        return i;
+    const Node* n = nodeOf(index);
+    i.path = n->path;
+    i.isDir = n->isDir;
+    i.encrypted = n->encrypted;
+    i.size = n->size;
+    i.packed = n->packed;
+    i.modified = n->modified;
+    return i;
+}
+
 QModelIndex ArchiveModel::indexOfPath(const QString& path) const
 {
     Node* n = m_root.get();

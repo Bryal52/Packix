@@ -8,6 +8,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QProcess>
+#include <QWidget>
 
 #import <AppKit/AppKit.h>
 #import <Security/Security.h>
@@ -112,6 +113,17 @@ QString keys(QString text)
 void setForeground(bool hasWindows)
 {
     [NSApp setActivationPolicy:hasWindows ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory];
+}
+
+void tintTitleBar(QWidget* window, const QColor& c)
+{
+    NSView* view = (__bridge NSView*)reinterpret_cast<void*>(window->window()->winId());
+    NSWindow* win = view.window;
+    if (!win)
+        return;
+    // A transparent title bar shows the window background; Qt paints the content area itself.
+    win.titlebarAppearsTransparent = YES;
+    win.backgroundColor = [NSColor colorWithSRGBRed:c.redF() green:c.greenF() blue:c.blueF() alpha:c.alphaF()];
 }
 
 void activate()
@@ -253,11 +265,37 @@ bool isDefaultArchiver()
     return handler && [handler.URLByStandardizingPath isEqual:me.URLByStandardizingPath];
 }
 
+namespace {
+
+// One system confirmation at a time, each after the previous one is answered.
+void claimNext(NSMutableArray<UTType*>* queue)
+{
+    if (queue.count == 0)
+        return;
+    UTType* t = queue.firstObject;
+    [queue removeObjectAtIndex:0];
+    [[NSWorkspace sharedWorkspace] setDefaultApplicationAtURL:[[NSBundle mainBundle] bundleURL]
+                                            toOpenContentType:t
+                                            completionHandler:^(NSError*) {
+                                                dispatch_async(dispatch_get_main_queue(), ^{ claimNext(queue); });
+                                            }];
+}
+
+} // namespace
+
 void makeDefaultArchiver()
 {
-    NSURL* me = [[NSBundle mainBundle] bundleURL];
-    for (UTType* t in archiveTypes())
-        [[NSWorkspace sharedWorkspace] setDefaultApplicationAtURL:me toOpenContentType:t completionHandler:^(NSError*){}];
+    // macOS confirms every type separately and has no silent way any more (the old
+    // LSSetDefaultRoleHandlerForContentType reports success but changes nothing on macOS 27).
+    // So only types another app holds are asked for; the rest go to Packix through Info.plist anyway.
+    NSURL* me = [[NSBundle mainBundle] bundleURL].URLByStandardizingPath;
+    NSMutableArray<UTType*>* queue = [NSMutableArray array];
+    for (UTType* t in archiveTypes()) {
+        NSURL* handler = [[NSWorkspace sharedWorkspace] URLForApplicationToOpenContentType:t];
+        if (handler && ![handler.URLByStandardizingPath isEqual:me])
+            [queue addObject:t];
+    }
+    claimNext(queue);
 }
 
 // ---------------------------------------------------------------------------
