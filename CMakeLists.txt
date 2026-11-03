@@ -128,6 +128,10 @@ if(APPLE)
     add_custom_command(TARGET Packix POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/shared
                 $<TARGET_BUNDLE_CONTENT_DIR:Packix>/Resources/shared
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/en.lproj
+                $<TARGET_BUNDLE_CONTENT_DIR:Packix>/Resources/en.lproj
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/ru.lproj
+                $<TARGET_BUNDLE_CONTENT_DIR:Packix>/Resources/ru.lproj
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/7zip-License.txt
                 $<TARGET_BUNDLE_CONTENT_DIR:Packix>/Resources/7zip-License.txt
         COMMAND ${CMAKE_COMMAND} -E copy ${SEVENZIP} $<TARGET_BUNDLE_CONTENT_DIR:Packix>/MacOS/7zz)

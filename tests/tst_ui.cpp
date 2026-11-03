@@ -95,6 +95,22 @@ private slots:
         }
     }
 
+    void englishComplete()
+    {
+        QHash<QString, QJsonValue> ru, en;
+        flatten(Shared::loadFile(Shared::path(QStringLiteral("lang/ru.json"))), QString(), ru);
+        flatten(Shared::loadFile(Shared::path(QStringLiteral("lang/en.json"))), QString(), en);
+        QStringList problems;
+        for (auto it = ru.cbegin(); it != ru.cend(); ++it) {
+            if (!en.contains(it.key()))
+                problems << it.key();
+            else if (it->isArray() && en.value(it.key()).toArray().size() != 2)
+                problems << it.key() + QStringLiteral(" (needs 2 forms)");
+        }
+        QVERIFY2(problems.isEmpty(), qPrintable(problems.join(QStringLiteral(", "))));
+        QCOMPARE(en.value(QStringLiteral("_meta.plural")).toString(), QStringLiteral("one"));
+    }
+
     void russianPlurals()
     {
         QCOMPARE(Ln("files.count", 1), QStringLiteral("1 файл"));

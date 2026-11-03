@@ -1,0 +1,305 @@
+{
+    "_meta": {
+        "name": "English",
+        "plural": "one",
+        "about": "Your own language: copy this file into the language folder (Settings → Language), rename it to xx.json, change name and translate the strings. plural: ru (3 forms), one (2 forms: 1 / many), none (1 form)."
+    },
+    "common": {
+        "ok": "OK",
+        "cancel": "Cancel",
+        "details": "Details",
+        "revealIn": "Show in {app}"
+    },
+    "units": {
+        "b": "B",
+        "kb": "KB",
+        "mb": "MB",
+        "gb": "GB",
+        "tb": "TB"
+    },
+    "files": {
+        "count": ["{n} file", "{n} files"]
+    },
+    "column": {
+        "name": "Name",
+        "type": "Kind",
+        "size": "Size",
+        "packed": "Packed",
+        "date": "Modified"
+    },
+    "archive": {
+        "extract": "Extract",
+        "extractSelected": "Extract Selected",
+        "extractTip": "Extract (⌘E)",
+        "delete": "Delete from Archive",
+        "deleteTip": "Delete the selection from the archive (⌫)",
+        "setPassword": "Set Password",
+        "passwordMenu": "Password",
+        "changePassword": "Change Password…",
+        "removePassword": "Remove Password…",
+        "search": "Search",
+        "protected": "Password protected",
+        "encryptedTip": "Password protected",
+        "namesEncrypted": "Even the file names are encrypted. Enter the password to see what is inside.",
+        "empty": "The archive is empty. Drop files here",
+        "selected": "selected: {count} · {size}",
+        "volumes": ["{n} part", "{n} parts"],
+        "readOnlyFormat": "This format can only be read: the archive cannot be changed.",
+        "readOnlyVolumes": "A multi-part archive cannot be changed — only extracted."
+    },
+    "level": {
+        "store": "No compression",
+        "fast": "Fast",
+        "normal": "Normal",
+        "max": "Maximum"
+    },
+    "create": {
+        "windowTitle": "Archive",
+        "title": "Archive",
+        "name": "Name:",
+        "namePlaceholder": "Archive name",
+        "type": "Type:",
+        "level": "Compression:",
+        "levelHelp": "<b>No compression</b> — the files are just put together into one archive. Instant.<br><b>Fast</b> — compresses a bit less, but quickly.<br><b>Normal</b> — a balance of speed and size.<br><b>Maximum</b> — the smallest archive, but slow.<br><br>Photos, videos, music and games (jpg, mp4, mp3, apk, nsp…) are already compressed and hardly get smaller — use “No compression” or “Fast” for them.",
+        "password": "Password:",
+        "passwordAgain": "Confirm password:",
+        "destination": "Where:",
+        "button": "Create",
+        "badName": "The name contains a character that cannot be used in a file name.",
+        "chooseTitle": "What to archive?",
+        "chooseButton": "Archive"
+    },
+    "password": {
+        "windowTitle": "Password",
+        "title": "“{name}” is password protected",
+        "subtitle": "Enter the password to continue.",
+        "placeholder": "Password",
+        "remember": "Remember password",
+        "open": "Open",
+        "checking": "Checking…",
+        "wrong": "Wrong password",
+        "mismatch": "Passwords don’t match",
+        "asciiHint": "ZIP: only Latin letters, digits and common symbols.",
+        "asciiOnly": "A ZIP password can only use Latin letters, digits and symbols."
+    },
+    "setPassword": {
+        "windowTitle": "Set Password",
+        "changeWindowTitle": "Change Password",
+        "title": "Set a password for “{name}”",
+        "changeTitle": "New password for “{name}”",
+        "button": "Set",
+        "changeButton": "Change",
+        "newFormat": "New format:",
+        "newFormatNote": "The {format} format cannot hold a password. The archive will be rebuilt in the chosen format and the old file deleted."
+    },
+    "removePassword": {
+        "title": "Remove the password?",
+        "text": "“{name}” will be rebuilt without a password — anyone will be able to open it.",
+        "button": "Remove Password"
+    },
+    "conflict": {
+        "title": "The file already exists",
+        "text": "“{name}” already exists in this folder.\n\nAre you sure you want to replace it? A replaced file cannot be brought back.",
+        "skip": "Skip",
+        "keepBoth": "Keep Both",
+        "replace": "Replace",
+        "applyToAll": "Apply to all"
+    },
+    "extract": {
+        "windowTitle": "Extract",
+        "titleAll": "Extract “{name}”",
+        "titleSome": ["Extract {n} item from “{name}”", "Extract {n} items from “{name}”"],
+        "nextToArchive": "Next to the archive",
+        "subfolder": "Create folder “{name}”",
+        "button": "Extract"
+    },
+    "delete": {
+        "title": "Delete from the archive?",
+        "textOne": "“{name}” will be deleted from the archive. This cannot be undone.",
+        "textMany": ["{n} item will be deleted from the archive. This cannot be undone.", "{n} items will be deleted from the archive. This cannot be undone."],
+        "button": "Delete"
+    },
+    "edited": {
+        "title": "File changed",
+        "text": "“{name}” was changed. Update it in the archive?",
+        "button": "Update"
+    },
+    "nested": {
+        "saveTitle": "Save changes?",
+        "saveText": "The archive inside was changed. Save the changes into “{name}”?",
+        "saveButton": "Save",
+        "readOnlyTitle": "Changes can’t be saved",
+        "readOnlyText": "“{name}” cannot be changed, so the changes stay only in the temporary copy."
+    },
+    "path": {
+        "places": "Quick folders",
+        "browse": "Browse…",
+        "chooseFolder": "Choose a folder",
+        "missingTitle": "No such folder",
+        "missingText": "The folder “{path}” does not exist. Create it?",
+        "create": "Create"
+    },
+    "places": {
+        "home": "Home",
+        "desktop": "Desktop",
+        "downloads": "Downloads",
+        "documents": "Documents",
+        "drive": "Drive {letter}"
+    },
+    "job": {
+        "creating": "Archiving “{name}”",
+        "extracting": "Extracting “{name}”",
+        "deleting": "Deleting from “{name}”",
+        "adding": "Adding to “{name}”",
+        "updating": "Updating “{name}”",
+        "settingPassword": "Setting a password on “{name}”",
+        "removingPassword": "Removing the password from “{name}”",
+        "preparing": "Preparing…",
+        "amount": "{done} of {total}",
+        "speed": "{speed}/s",
+        "leftSec": ["{n} second left", "{n} seconds left"],
+        "leftMin": ["about {n} minute left", "about {n} minutes left"],
+        "cancelling": "Cancelling…"
+    },
+    "preview": {
+        "loading": "Loading preview…",
+        "needFfmpeg": "Video previews need ffmpeg (brew install ffmpeg)",
+        "locked": "Password protected — preview after the password is entered",
+        "tooBig": "Too big for a preview"
+    },
+    "notify": {
+        "created": "Archive ready",
+        "extracted": "Extracted"
+    },
+    "error": {
+        "needPassword": { "title": "Password needed", "text": "“{name}” is password protected." },
+        "wrongPassword": { "title": "Wrong password", "text": "The password for “{name}” didn’t fit." },
+        "passwordCharset": { "title": "This password won’t work for ZIP", "text": "A ZIP password can only use Latin letters, digits and common symbols. For a password in another alphabet, choose 7z." },
+        "corrupt": { "title": "The archive is damaged", "text": "“{name}” could not be read. It may not have downloaded completely." },
+        "unsupported": { "title": "Packix can’t open this file", "text": "“{name}” is not an archive, or its format is unknown to Packix." },
+        "missingVolume": { "title": "A part of the archive is missing", "text": "Missing parts: {parts}. Put them next to the others and try again." },
+        "noSpace": { "title": "Not enough space", "text": "{need} needed, {free} free." },
+        "noAccess": { "title": "No access", "text": "No permission to write: {path}. Choose another folder." },
+        "notFound": { "title": "File not found", "text": "“{name}” is no longer there." },
+        "readOnly": { "title": "This archive can’t be changed", "text": "The format can only be read: it can be extracted, not changed." },
+        "cancelled": { "title": "Cancelled" },
+        "engineMissing": { "title": "7-Zip not found", "text": "The 7-Zip engine is missing inside Packix. Reinstall Packix." },
+        "failed": { "title": "That didn’t work", "text": "Something went wrong. See the log for details." }
+    },
+    "log": {
+        "title": "Log",
+        "windowTitle": "Packix Log",
+        "newErrors": ["Log — {n} new error", "Log — {n} new errors"],
+        "empty": "No errors so far.",
+        "copyAll": "Copy All",
+        "clear": "Clear",
+        "clearTitle": "Clear the log?",
+        "clearText": "All error records will be deleted.",
+        "fileAt": "Log: {path}"
+    },
+    "open": {
+        "title": "Open Archive",
+        "filter": "Archives",
+        "allFiles": "All files"
+    },
+    "tray": {
+        "open": "Open Archive…",
+        "create": "Create Archive…",
+        "job": "Running: {title}",
+        "jobPercent": "Running: {title} — {percent}%",
+        "loginItem": "Open at Login",
+        "language": "Language",
+        "settings": "Settings…",
+        "about": "About Packix",
+        "quit": "Quit"
+    },
+    "launcher": {
+        "drop": "Drop an archive here to open it,\nor files to archive them"
+    },
+    "settings": {
+        "windowTitle": "Packix Settings",
+        "language": "Language:",
+        "languageFiles": "Language files: {path}",
+        "languageBroken": "error in the file, line {line}",
+        "copyPath": "Copy Path",
+        "isDefault": "Packix opens archives by default.",
+        "notDefault": "Another app opens archives.",
+        "makeDefault": "Make Default Archiver",
+        "passwords": "Saved passwords",
+        "showPasswords": "Show passwords",
+        "forget": "Delete",
+        "noPasswords": "Nothing saved yet"
+    },
+    "welcome": {
+        "windowTitle": "Packix",
+        "title": "Welcome to Packix",
+        "default": "Make Packix the default archiver",
+        "login": "Open at login"
+    },
+    "about": {
+        "windowTitle": "About Packix",
+        "text": "An archiver for macOS.\nEngine: 7-Zip {engine} — © Igor Pavlov, GNU LGPL.",
+        "license": "7-Zip License"
+    },
+    "type": {
+        "folder": "Folder",
+        "gameFolder": "Game folder",
+        "default": {
+            "file": "{ext} file",
+            "noExt": "File",
+            "archive": "{ext} archive",
+            "video": "{ext} video",
+            "image": "{ext} image",
+            "audio": "{ext} audio",
+            "code": "{ext} code"
+        },
+        "apk": "Android app",
+        "apkBundle": "Android package",
+        "aab": "Android bundle (AAB)",
+        "exe": "Windows program",
+        "msi": "Windows installer",
+        "dll": "Windows library",
+        "bat": "Windows script",
+        "svg": "SVG vector image",
+        "txt": "Text file",
+        "log": "Log",
+        "md": "Markdown text",
+        "config": "Settings file",
+        "csv": "CSV table",
+        "nfo": "Description",
+        "rtf": "RTF document",
+        "document": "Document",
+        "spreadsheet": "Spreadsheet",
+        "presentation": "Presentation",
+        "book": "Book",
+        "pdf": "PDF document",
+        "json": "JSON data",
+        "data": "Data",
+        "sfo": "Game parameters (SFO)",
+        "vpk": "PS Vita app (VPK)",
+        "nsp": "Switch game (NSP)",
+        "nsz": "Switch game (NSZ, compressed)",
+        "xci": "Switch cartridge (XCI)",
+        "xcz": "Switch cartridge (XCZ, compressed)",
+        "nro": "Switch program (NRO)",
+        "nca": "Switch content (NCA)",
+        "iso": "ISO disk image",
+        "cso": "Compressed PSP image (CSO)",
+        "discImage": "Disk image",
+        "dmg": "macOS disk image",
+        "pbp": "PSP game (PBP)",
+        "pkg": "PS3 / PS Vita package (PKG)",
+        "rap": "PS3 license (RAP)",
+        "rif": "License (RIF)",
+        "edat": "Protected data (EDAT)",
+        "keys": "Keys",
+        "tik": "Switch ticket",
+        "sprx": "PS3 plugin (SPRX)",
+        "suprx": "PS Vita plugin (SUPRX)",
+        "skprx": "PS Vita kernel plugin (SKPRX)",
+        "prx": "PSP plugin (PRX)",
+        "elf": "Executable",
+        "save": "Save file",
+        "eboot": "Game launcher file"
+    }
+}

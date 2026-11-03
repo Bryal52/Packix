@@ -51,7 +51,18 @@ Lang::Lang()
     QDir().mkpath(userDir());
     scan();
     m_fallback = loadStrings(Shared::path(QStringLiteral("lang/") + kFallback + QStringLiteral(".json")));
-    const QString saved = QSettings().value(QStringLiteral("language"), kFallback).toString();
+    QString system = kFallback;
+    for (const QString& ui : QLocale::system().uiLanguages()) {
+        const QString code = ui.left(2).toLower();
+        bool known = false;
+        for (const Info& i : std::as_const(m_available))
+            known = known || (i.code == code && i.error.isEmpty());
+        if (known) {
+            system = code;
+            break;
+        }
+    }
+    const QString saved = QSettings().value(QStringLiteral("language"), system).toString();
     if (!setLanguage(saved))
         setLanguage(kFallback);
 

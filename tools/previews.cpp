@@ -47,10 +47,12 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     QApplication::setApplicationName(QStringLiteral("Packix"));
-    QApplication::setOrganizationName(QStringLiteral("Packix"));
+    // Own settings, so a preview never changes the language of the real Packix.
+    QApplication::setOrganizationName(QStringLiteral("PackixPreviews"));
     const QString out = argc > 1 ? QString::fromLocal8Bit(argv[1]) : QStringLiteral(".");
     QDir().mkpath(out);
-    Lang::instance();
+    if (argc > 2)
+        Lang::instance().setLanguage(QString::fromLocal8Bit(argv[2]));
 
     QTemporaryDir tmp;
     const QString src = tmp.filePath(QStringLiteral("Отпуск 2025"));

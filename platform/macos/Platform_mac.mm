@@ -155,7 +155,7 @@ void storePasswords(const QStringList& list)
     if (st == errSecItemNotFound) {
         NSMutableDictionary* add = [query mutableCopy];
         add[(__bridge id)kSecValueData] = data;
-        add[(__bridge id)kSecAttrLabel] = @"Packix — сохранённые пароли архивов";
+        add[(__bridge id)kSecAttrLabel] = @"Packix archive passwords";
         SecItemAdd((__bridge CFDictionaryRef)add, nullptr);
     }
 }
