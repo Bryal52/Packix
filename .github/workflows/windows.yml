@@ -51,8 +51,13 @@ jobs:
           PACKIX_7ZZ: C:\Program Files\7-Zip\7z.exe
           QT_QPA_PLATFORM: offscreen
         run: |
-          ./build/tst_core.exe
-          ./build/tst_ui.exe
+          # Reports go to files: QtTest output does not reach the MSYS2 console reliably.
+          status=0
+          ./build/tst_core.exe -o core.txt,txt || status=1
+          cat core.txt
+          ./build/tst_ui.exe -o ui.txt,txt || status=1
+          cat ui.txt
+          exit $status
 
       - name: Collect Packix with everything it needs
         run: |
