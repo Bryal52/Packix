@@ -1,0 +1,13 @@
+Packix uses 7-Zip as its archive engine (the 7zz program inside Packix.app).
+
+7-Zip
+Copyright (C) 1999-2026 Igor Pavlov.
+https://www.7-zip.org
+
+7-Zip is free software. Most of it is distributed under the GNU Lesser General Public
+License (LGPL) version 2.1 or later; some parts are under the BSD 3-clause license.
+The unRAR code is under the GNU LGPL with the unRAR license restriction: it may be used
+to unpack RAR archives, but not to re-create the RAR compression algorithm.
+
+The full license text: https://www.7-zip.org/license.txt
+Source code: https://www.7-zip.org/download.html

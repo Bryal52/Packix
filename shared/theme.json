@@ -10,11 +10,12 @@
             "focus": "#E3A39B",
             "hover": "#F8E9E6",
             "warning": "#B5523F",
-            "glass": "#FFFFFF",
+            "glass": "#F7EEEC",
             "glassEdge": "#00000024",
             "glassShine": "#FFFFFFD0",
-            "liquidTop": "#E08A80",
-            "liquidBottom": "#B9554C",
+            "liquidTop": "#FF3A3AEB",
+            "liquidBottom": "#C2000FEB",
+            "liquidHighlight": "#FFFFFF73",
             "liquidDim": "#C9B3B0",
             "dropZone": "#C8645A"
         },
@@ -30,8 +31,9 @@
             "glass": "#FFFFFF14",
             "glassEdge": "#FFFFFF2E",
             "glassShine": "#FFFFFF40",
-            "liquidTop": "#EA958B",
-            "liquidBottom": "#B65A50",
+            "liquidTop": "#FF4848EB",
+            "liquidBottom": "#D00A1AEB",
+            "liquidHighlight": "#FFFFFF5C",
             "liquidDim": "#5B4846",
             "dropZone": "#D9786E"
         }

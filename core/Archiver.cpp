@@ -406,6 +406,21 @@ Status test(const ArchiveInfo& info, const QString& password, Progress* progress
     return engine()->test(info.path, formatOf(info), password, progress);
 }
 
+Status checkPassword(const ArchiveInfo& info, const QString& password)
+{
+    const Item* pick = nullptr;
+    for (const Item& i : info.items) {
+        if (i.encrypted && !i.isDir && (!pick || i.size < pick->size))
+            pick = &i;
+    }
+    if (!pick)
+        return {};
+    QTemporaryDir tmp;
+    if (!tmp.isValid())
+        return Status::fail(Error::NoAccess, QDir::tempPath());
+    return engine()->extract(info.path, formatOf(info), tmp.path(), {pick->path}, password, nullptr);
+}
+
 Status changePassword(const ArchiveInfo& info, const PasswordRequest& req, Progress* progress, QString* resultPath)
 {
     if (info.volumes.size() > 1)

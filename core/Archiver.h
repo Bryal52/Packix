@@ -59,6 +59,10 @@ Status changePassword(const ArchiveInfo& info, const PasswordRequest& request, P
 
 Status test(const ArchiveInfo& info, const QString& password, Progress* progress = nullptr);
 
+// Quick check before a long job: unpacks only the smallest encrypted file to a temporary folder.
+// Ok when nothing is encrypted.
+Status checkPassword(const ArchiveInfo& info, const QString& password);
+
 // Size of files and folders on disk (for progress and free-space checks).
 qint64 diskSize(const QStringList& paths);
 

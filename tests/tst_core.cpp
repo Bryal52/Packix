@@ -237,6 +237,9 @@ private slots:
         QVERIFY(Archiver::open(archive, {}, info).ok());   // zip names are not encrypted
         QVERIFY(info.anyEncrypted);
         QVERIFY(!info.encryptedNames);
+        QCOMPARE(Archiver::checkPassword(info, {}).error, Error::NeedPassword);
+        QCOMPARE(Archiver::checkPassword(info, QStringLiteral("nope")).error, Error::WrongPassword);
+        QVERIFY(Archiver::checkPassword(info, QStringLiteral("Secret 1!")).ok());
 
         Archiver::ExtractRequest req;
         req.archive = archive;
