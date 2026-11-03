@@ -1,0 +1,62 @@
+{
+    "createOrder": ["zip", "7z", "tar.gz", "tar.xz"],
+    "defaultCreate": "zip",
+    "formats": [
+        {
+            "id": "zip", "name": "ZIP", "extensions": ["zip", "zipx"],
+            "open": true, "create": true, "modify": true, "password": true, "defaultHandler": true,
+            "createArgs": ["-tzip"],
+            "passwordArgs": ["-mem=AES256"],
+            "passwordAsciiOnly": true
+        },
+        {
+            "id": "7z", "name": "7Z", "extensions": ["7z"],
+            "open": true, "create": true, "modify": true, "password": true, "defaultHandler": true,
+            "createArgs": ["-t7z", "-ms=on", "-mmt=on"],
+            "encryptNamesArgs": ["-mhe=on"]
+        },
+        { "id": "rar", "name": "RAR", "extensions": ["rar"], "open": true, "password": true, "defaultHandler": true },
+        {
+            "id": "tar", "name": "TAR", "extensions": ["tar"],
+            "open": true, "modify": true, "defaultHandler": true,
+            "createArgs": ["-ttar"]
+        },
+        {
+            "id": "tar.gz", "name": "TAR.GZ", "extensions": ["tar.gz", "tgz"],
+            "open": true, "create": true, "modify": true, "defaultHandler": true,
+            "wrapsTar": true, "compressArgs": ["-tgzip"]
+        },
+        {
+            "id": "tar.xz", "name": "TAR.XZ", "extensions": ["tar.xz", "txz"],
+            "open": true, "create": true, "modify": true, "defaultHandler": true,
+            "wrapsTar": true, "compressArgs": ["-txz"]
+        },
+        {
+            "id": "tar.bz2", "name": "TAR.BZ2", "extensions": ["tar.bz2", "tbz2", "tbz"],
+            "open": true, "modify": true, "defaultHandler": true,
+            "wrapsTar": true, "compressArgs": ["-tbzip2"]
+        },
+        { "id": "tar.zst", "name": "TAR.ZST", "extensions": ["tar.zst", "tzst"], "open": true, "defaultHandler": true, "wrapsTar": true },
+        { "id": "gz", "name": "GZ", "extensions": ["gz"], "open": true, "defaultHandler": true },
+        { "id": "bz2", "name": "BZ2", "extensions": ["bz2"], "open": true, "defaultHandler": true },
+        { "id": "xz", "name": "XZ", "extensions": ["xz"], "open": true, "defaultHandler": true },
+        { "id": "zst", "name": "ZST", "extensions": ["zst"], "open": true, "defaultHandler": true },
+        { "id": "lzma", "name": "LZMA", "extensions": ["lzma"], "open": true },
+        { "id": "iso", "name": "ISO", "extensions": ["iso"], "open": true },
+        { "id": "dmg", "name": "DMG", "extensions": ["dmg"], "open": true },
+        { "id": "wim", "name": "WIM", "extensions": ["wim"], "open": true },
+        { "id": "cab", "name": "CAB", "extensions": ["cab"], "open": true },
+        { "id": "arj", "name": "ARJ", "extensions": ["arj"], "open": true },
+        { "id": "lzh", "name": "LZH", "extensions": ["lzh", "lha"], "open": true },
+        { "id": "cpio", "name": "CPIO", "extensions": ["cpio"], "open": true },
+        { "id": "rpm", "name": "RPM", "extensions": ["rpm"], "open": true },
+        { "id": "deb", "name": "DEB", "extensions": ["deb"], "open": true }
+    ],
+    "volumes": [
+        { "kind": "numbered", "pattern": "^(.+)\\.(\\d{3,})$" },
+        { "kind": "rarPart", "pattern": "^(.+)\\.part(\\d+)\\.rar$" },
+        { "kind": "rarOld", "pattern": "^(.+)\\.r(\\d{2,})$" },
+        { "kind": "zipSplit", "pattern": "^(.+)\\.z(\\d{2,})$" }
+    ],
+    "junk": [".DS_Store", "__MACOSX", "._*", ".Spotlight-V100", ".Trashes", ".fseventsd", ".TemporaryItems"]
+}

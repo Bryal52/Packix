@@ -1,0 +1,63 @@
+{
+    "name": "Packix",
+    "colors": {
+        "light": {
+            "accent": "#C8645A",
+            "accentText": "#FFFFFF",
+            "tint": "#FBF1EF",
+            "selection": "#F3DCD8",
+            "selectionText": "#2B1B19",
+            "focus": "#E3A39B",
+            "hover": "#F8E9E6",
+            "warning": "#B5523F",
+            "glass": "#FFFFFF",
+            "glassEdge": "#00000024",
+            "glassShine": "#FFFFFFD0",
+            "liquidTop": "#E08A80",
+            "liquidBottom": "#B9554C",
+            "liquidDim": "#C9B3B0",
+            "dropZone": "#C8645A"
+        },
+        "dark": {
+            "accent": "#D9786E",
+            "accentText": "#FFFFFF",
+            "tint": "#2B2120",
+            "selection": "#4A2E2B",
+            "selectionText": "#F5E6E4",
+            "focus": "#9C5650",
+            "hover": "#352725",
+            "warning": "#E58A76",
+            "glass": "#FFFFFF14",
+            "glassEdge": "#FFFFFF2E",
+            "glassShine": "#FFFFFF40",
+            "liquidTop": "#EA958B",
+            "liquidBottom": "#B65A50",
+            "liquidDim": "#5B4846",
+            "dropZone": "#D9786E"
+        }
+    },
+    "metrics": {
+        "rowHeight": 26,
+        "fileIconSize": 20,
+        "lockIconSize": 12,
+        "radius": 8,
+        "dialogMargin": 20,
+        "thermometerHeight": 22
+    },
+    "motion": {
+        "packMs": 250,
+        "treeMs": 0,
+        "dropGlowMs": 150,
+        "shakeMs": 250,
+        "shakeCount": 3,
+        "shakeAmplitude": 8,
+        "claspMs": 200,
+        "liquidCatchUpMs": 220,
+        "finishShineMs": 200,
+        "drainMs": 200,
+        "waveHeight": 1.6,
+        "wavePeriodMs": 1800,
+        "bubbleEveryMs": 1400,
+        "notifyAfterSec": 10
+    }
+}

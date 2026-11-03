@@ -1,0 +1,9 @@
+{
+    "default": "normal",
+    "levels": [
+        { "id": "store",  "args": ["-mx0"] },
+        { "id": "fast",   "args": ["-mx1"] },
+        { "id": "normal", "args": ["-mx5"] },
+        { "id": "max",    "args": ["-mx9"] }
+    ]
+}
