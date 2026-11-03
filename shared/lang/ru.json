@@ -4,6 +4,9 @@
         "plural": "ru",
         "about": "Свой язык: скопируйте этот файл в папку языков (Настройки → Язык), переименуйте в xx.json, поменяйте name и переведите строки. plural: ru (3 формы), one (2 формы: 1 / много), none (1 форма)."
     },
+    "platform": {
+        "fileManager": "Проводнике"
+    },
     "common": {
         "ok": "OK",
         "cancel": "Отмена",
@@ -238,7 +241,7 @@
     },
     "about": {
         "windowTitle": "О программе",
-        "text": "Архиватор для macOS.\nДвижок: 7-Zip {engine} — © Игорь Павлов, GNU LGPL.",
+        "text": "Архиватор для macOS и Windows.\nДвижок: 7-Zip {engine} — © Игорь Павлов, GNU LGPL.",
         "license": "Лицензия 7-Zip"
     },
     "type": {

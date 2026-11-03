@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(Packix VERSION 0.1.0 LANGUAGES CXX)
+project(Packix VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,7 +9,7 @@ if(APPLE)
     enable_language(OBJCXX)
 endif()
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Concurrent Test)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Concurrent Network Test)
 
 # Archive engine without any interface: shared with Folix and, later, the Android app.
 add_library(packix_core STATIC
@@ -48,6 +48,8 @@ set(PACKIX_UI_SOURCES
 if(APPLE)
     list(APPEND PACKIX_UI_SOURCES platform/macos/Platform_mac.mm)
     set_source_files_properties(platform/macos/Platform_mac.mm PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
+elseif(WIN32)
+    list(APPEND PACKIX_UI_SOURCES platform/windows/Platform_win.cpp)
 endif()
 add_library(packix_ui STATIC ${PACKIX_UI_SOURCES})
 target_include_directories(packix_ui PUBLIC dialogs platform)
@@ -55,6 +57,8 @@ target_link_libraries(packix_ui PUBLIC packix_core Qt6::Widgets Qt6::Concurrent)
 if(APPLE)
     target_link_libraries(packix_ui PUBLIC
         "-framework AppKit" "-framework Security" "-framework UniformTypeIdentifiers" "-framework UserNotifications")
+elseif(WIN32)
+    target_link_libraries(packix_ui PUBLIC dwmapi advapi32)
 endif()
 
 add_executable(packix-cli cli/main.cpp)
@@ -88,9 +92,9 @@ set(PACKIX_APP_SOURCES
     app/Preview.cpp app/Preview.h
 )
 
+set(LOGO ${CMAKE_CURRENT_SOURCE_DIR}/resources/logo.png)
+set(ICONS_DIR ${CMAKE_CURRENT_BINARY_DIR}/icons)
 if(APPLE)
-    set(LOGO ${CMAKE_CURRENT_SOURCE_DIR}/resources/logo.png)
-    set(ICONS_DIR ${CMAKE_CURRENT_BINARY_DIR}/icons)
     set(APP_ICNS ${ICONS_DIR}/AppIcon.icns)
     add_custom_command(
         OUTPUT ${APP_ICNS}
@@ -132,16 +136,32 @@ if(APPLE)
                 $<TARGET_BUNDLE_CONTENT_DIR:Packix>/Resources/en.lproj
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/ru.lproj
                 $<TARGET_BUNDLE_CONTENT_DIR:Packix>/Resources/ru.lproj
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/zh-Hans.lproj
+                $<TARGET_BUNDLE_CONTENT_DIR:Packix>/Resources/zh-Hans.lproj
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/7zip-License.txt
                 $<TARGET_BUNDLE_CONTENT_DIR:Packix>/Resources/7zip-License.txt
         COMMAND ${CMAKE_COMMAND} -E copy ${SEVENZIP} $<TARGET_BUNDLE_CONTENT_DIR:Packix>/MacOS/7zz)
 else()
-    add_executable(Packix WIN32 ${PACKIX_APP_SOURCES})
+    # Windows: icon of the .exe from the logo; data files, 7-Zip and its license next to Packix.exe.
+    set(APP_ICO ${ICONS_DIR}/packix.ico)
+    add_custom_command(
+        OUTPUT ${APP_ICO}
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${ICONS_DIR}
+        COMMAND $<TARGET_FILE:makeicon> ${LOGO} ${ICONS_DIR}/packix-1024.png ${APP_ICO}
+        DEPENDS makeicon ${LOGO}
+        COMMENT "Building packix.ico")
+    configure_file(resources/packix.rc.in ${CMAKE_CURRENT_BINARY_DIR}/packix.rc @ONLY)
+    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/packix.rc PROPERTIES OBJECT_DEPENDS ${APP_ICO})
+    add_executable(Packix WIN32 ${PACKIX_APP_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/packix.rc)
+    add_custom_command(TARGET Packix POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/shared $<TARGET_FILE_DIR:Packix>/shared
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/7zip-License.txt $<TARGET_FILE_DIR:Packix>/7zip-License.txt
+        COMMAND ${CMAKE_COMMAND} -E copy ${APP_ICO} $<TARGET_FILE_DIR:Packix>/packix.ico)
 endif()
 
 target_include_directories(Packix PRIVATE app)
 target_compile_definitions(Packix PRIVATE PACKIX_VERSION="${PROJECT_VERSION}")
-target_link_libraries(Packix PRIVATE packix_ui)
+target_link_libraries(Packix PRIVATE packix_ui Qt6::Network)
 
 # Development helper: renders windows to PNG for a look at the design.
 add_executable(previews EXCLUDE_FROM_ALL tools/previews.cpp app/ArchiveModel.cpp app/ArchiveWindow.cpp app/Preview.cpp)

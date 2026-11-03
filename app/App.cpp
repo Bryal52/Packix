@@ -63,7 +63,11 @@ QLabel* logoLabel(int size, QWidget* parent)
 App::App(bool background)
 {
     Q_UNUSED(background);
-    m_tray = new QSystemTrayIcon(trayIcon(), this);
+#ifdef Q_OS_MACOS
+    m_tray = new QSystemTrayIcon(trayIcon(), this);   // single-colour, macOS tints it
+#else
+    m_tray = new QSystemTrayIcon(QApplication::windowIcon(), this);
+#endif
     m_menu = new QMenu;
     connect(m_menu, &QMenu::aboutToShow, this, &App::rebuildMenu);
     m_tray->setContextMenu(m_menu);
@@ -148,6 +152,29 @@ void App::openArchive(const QString& path)
         m_launcher->close();
     platform::activate();
     (new ArchiveWindow(abs))->start();
+}
+
+void App::request(const QString& mode, const QStringList& files)
+{
+    if (mode == QLatin1String("archive")) {
+        for (const QString& f : files) {
+            if (!m_pendingArchive.contains(f))
+                m_pendingArchive << f;
+        }
+        if (!m_archiveBatch) {
+            m_archiveBatch = new QTimer(this);
+            m_archiveBatch->setSingleShot(true);
+            connect(m_archiveBatch, &QTimer::timeout, this, [this] { archiveFiles(std::exchange(m_pendingArchive, {})); });
+        }
+        m_archiveBatch->start(400);   // the rest of the selection is still on its way
+        return;
+    }
+    if (files.isEmpty()) {
+        showLauncher();
+        return;
+    }
+    for (const QString& f : files)
+        openArchive(f);
 }
 
 void App::archiveFiles(const QStringList& files)

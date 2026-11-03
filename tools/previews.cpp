@@ -14,7 +14,9 @@
 #include <QApplication>
 #include <QDir>
 #include <QFile>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 #include <QPainter>
 #include <QTemporaryDir>
 #include <QThread>
@@ -124,6 +126,44 @@ int main(int argc, char* argv[])
         // Close-up of one, four times bigger.
         const QPixmap one = box.layout()->itemAt(1)->widget()->grab();
         one.scaled(one.size() * 4).save(out + QStringLiteral("/5b-thermometer-zoom.png"));
+    }
+    {
+        // What a running job looks like (same layout as the real job window).
+        QWidget job;
+        job.setWindowTitle(L("job.creating", {{"name", QStringLiteral("Отпуск.zip")}}));
+        Theme::get().apply(&job);
+        auto* heading = new QLabel(job.windowTitle(), &job);
+        QFont f = heading->font();
+        f.setBold(true);
+        f.setPointSizeF(f.pointSizeF() + 1);
+        heading->setFont(f);
+        auto* current = new QLabel(QStringLiteral("Отпуск 2025/Видео/море.mp4"), &job);
+        auto* bar = new Thermometer(&job);
+        bar->setValue(0.62);
+        auto* detail = new QLabel(L("job.amount", {{"done", humanSize(1503238553)}, {"total", humanSize(2469606195)}})
+                                      + QStringLiteral(" · ") + L("job.speed", {{"speed", humanSize(50331648)}})
+                                      + QStringLiteral(" · ") + Ln("job.leftSec", 19),
+                                  &job);
+        detail->setForegroundRole(QPalette::PlaceholderText);
+        auto* cancel = new QPushButton(L("common.cancel"), &job);
+        auto* buttons = new QHBoxLayout;
+        buttons->addStretch();
+        buttons->addWidget(cancel);
+        auto* layout = new QVBoxLayout(&job);
+        layout->setContentsMargins(20, 18, 20, 16);
+        layout->setSpacing(8);
+        layout->addWidget(heading);
+        layout->addWidget(current);
+        layout->addWidget(bar);
+        layout->addWidget(detail);
+        layout->addLayout(buttons);
+        job.resize(480, job.sizeHint().height());
+        job.show();
+        for (int i = 0; i < 90; ++i) {
+            QApplication::processEvents();
+            QThread::msleep(16);
+        }
+        job.grab().save(out + QStringLiteral("/7-job.png"));
     }
     {
         QImage img(360, 120, QImage::Format_ARGB32_Premultiplied);

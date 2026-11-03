@@ -1,0 +1,24 @@
+IDI_ICON1 ICON "@CMAKE_CURRENT_BINARY_DIR@/icons/packix.ico"
+
+1 VERSIONINFO
+FILEVERSION @PROJECT_VERSION_MAJOR@,@PROJECT_VERSION_MINOR@,@PROJECT_VERSION_PATCH@,0
+PRODUCTVERSION @PROJECT_VERSION_MAJOR@,@PROJECT_VERSION_MINOR@,@PROJECT_VERSION_PATCH@,0
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "Bryal52"
+            VALUE "FileDescription", "Packix archiver"
+            VALUE "FileVersion", "@PROJECT_VERSION@"
+            VALUE "InternalName", "Packix"
+            VALUE "OriginalFilename", "Packix.exe"
+            VALUE "ProductName", "Packix"
+            VALUE "ProductVersion", "@PROJECT_VERSION@"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

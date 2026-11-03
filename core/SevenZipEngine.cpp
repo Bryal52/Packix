@@ -14,6 +14,13 @@
 
 #include <filesystem>
 
+#ifdef Q_OS_WIN
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
+
 namespace packix {
 
 namespace {
@@ -21,6 +28,16 @@ namespace {
 const QStringList kCommon = {QStringLiteral("-y"), QStringLiteral("-sccUTF-8"), QStringLiteral("-scsUTF-8")};
 
 // 7-Zip redraws progress with backspaces and carriage returns.
+// 7z.exe is a console program: on Windows it must not flash a console window.
+void hideConsole(QProcess& p)
+{
+#ifdef Q_OS_WIN
+    p.setCreateProcessArgumentsModifier([](QProcess::CreateProcessArguments* a) { a->flags |= CREATE_NO_WINDOW; });
+#else
+    Q_UNUSED(p);
+#endif
+}
+
 QStringList outputLines(QString text)
 {
     text.replace(QLatin1Char('\b'), QLatin1Char('\n'));
@@ -305,6 +322,7 @@ SevenZipEngine::Run SevenZipEngine::run(const QStringList& args, const QString& 
         return r;
     }
     QProcess p;
+    hideConsole(p);
     p.setProcessChannelMode(QProcess::MergedChannels);
     if (!workDir.isEmpty())
         p.setWorkingDirectory(workDir);
@@ -355,6 +373,8 @@ SevenZipEngine::Run SevenZipEngine::pipe(const QStringList& first, const QString
     }
     QProcess a;
     QProcess b;
+    hideConsole(a);
+    hideConsole(b);
     a.setStandardOutputProcess(&b);
     b.setProcessChannelMode(QProcess::MergedChannels);
     if (!workDir.isEmpty()) {

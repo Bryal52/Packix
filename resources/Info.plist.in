@@ -26,6 +26,7 @@
     <array>
         <string>ru</string>
         <string>en</string>
+        <string>zh-Hans</string>
     </array>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.utilities</string>

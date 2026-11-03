@@ -4,6 +4,9 @@
         "plural": "one",
         "about": "Your own language: copy this file into the language folder (Settings → Language), rename it to xx.json, change name and translate the strings. plural: ru (3 forms), one (2 forms: 1 / many), none (1 form)."
     },
+    "platform": {
+        "fileManager": "File Explorer"
+    },
     "common": {
         "ok": "OK",
         "cancel": "Cancel",
@@ -238,7 +241,7 @@
     },
     "about": {
         "windowTitle": "About Packix",
-        "text": "An archiver for macOS.\nEngine: 7-Zip {engine} — © Igor Pavlov, GNU LGPL.",
+        "text": "An archiver for macOS and Windows.\nEngine: 7-Zip {engine} — © Igor Pavlov, GNU LGPL.",
         "license": "7-Zip License"
     },
     "type": {

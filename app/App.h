@@ -6,6 +6,7 @@
 
 class QMenu;
 class QSystemTrayIcon;
+class QTimer;
 class QWidget;
 
 namespace packix::ui {
@@ -17,6 +18,9 @@ public:
     explicit App(bool background);
 
     void openArchive(const QString& path);
+    // From the command line or another start of Packix: "open" archives or "archive" files.
+    // Explorer starts Packix once per selected file; those arrive here and become one archive.
+    void request(const QString& mode, const QStringList& files);
     void archiveFiles(const QStringList& files);
     // Packix started by hand without a file: a small "drop an archive here" window.
     void showLauncherIfIdle();
@@ -39,6 +43,8 @@ private:
     QMenu* m_menu;
     QPointer<QWidget> m_launcher;
     QPointer<QWidget> m_settings;
+    QStringList m_pendingArchive;
+    QTimer* m_archiveBatch = nullptr;
     bool m_sawFile = false;
     bool m_foreground = false;
 };

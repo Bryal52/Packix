@@ -379,6 +379,9 @@ private slots:
 
     void escapingLinkDropped()
     {
+#ifdef Q_OS_WIN
+        QSKIP("Qt makes .lnk shortcuts instead of symbolic links on Windows");
+#endif
         QTemporaryDir tmp;
         QDir().mkpath(tmp.filePath(QStringLiteral("src")));
         write(tmp.filePath(QStringLiteral("src/ok.txt")), "ok");
@@ -431,7 +434,9 @@ private slots:
     {
         const QString s = Temp::sessionDir();
         QVERIFY(QFileInfo(s).isDir());
+#ifndef Q_OS_WIN   // Windows has no Unix permissions; the folder is in the user's own temp folder
         QCOMPARE(QFileInfo(s).permissions() & (QFileDevice::ReadOther | QFileDevice::ReadGroup), QFileDevice::Permissions());
+#endif
         const QString d = Temp::newDir();
         QVERIFY(d.startsWith(s));
         Temp::cleanupStale();

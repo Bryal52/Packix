@@ -1,0 +1,308 @@
+{
+    "_meta": {
+        "name": "简体中文",
+        "plural": "none",
+        "about": "自定义语言：把此文件复制到语言文件夹（设置 → 语言），改名为 xx.json，修改 name 并翻译各条文字。plural：ru（3 种形式）、one（2 种：1 / 多）、none（1 种）。"
+    },
+    "platform": {
+        "fileManager": "文件资源管理器"
+    },
+    "common": {
+        "ok": "好",
+        "cancel": "取消",
+        "details": "详细信息",
+        "revealIn": "在 {app} 中显示"
+    },
+    "units": {
+        "b": "B",
+        "kb": "KB",
+        "mb": "MB",
+        "gb": "GB",
+        "tb": "TB"
+    },
+    "files": {
+        "count": ["{n} 个文件"]
+    },
+    "column": {
+        "name": "名称",
+        "type": "种类",
+        "size": "大小",
+        "packed": "压缩后",
+        "date": "修改日期"
+    },
+    "archive": {
+        "extract": "解压",
+        "extractSelected": "解压所选",
+        "extractTip": "解压（⌘E）",
+        "delete": "从压缩包删除",
+        "deleteTip": "从压缩包中删除所选项目（⌫）",
+        "setPassword": "设置密码",
+        "passwordMenu": "密码",
+        "changePassword": "更改密码…",
+        "removePassword": "移除密码…",
+        "search": "搜索",
+        "protected": "受密码保护",
+        "encryptedTip": "受密码保护",
+        "namesEncrypted": "连文件名也已加密。输入密码以查看内容。",
+        "empty": "压缩包为空。把文件拖到这里",
+        "selected": "已选择：{count} · {size}",
+        "volumes": ["{n} 个分卷"],
+        "readOnlyFormat": "此格式只能读取：无法修改压缩包。",
+        "readOnlyVolumes": "分卷压缩包无法修改，只能解压。"
+    },
+    "level": {
+        "store": "不压缩",
+        "fast": "快速",
+        "normal": "标准",
+        "max": "最大"
+    },
+    "create": {
+        "windowTitle": "压缩",
+        "title": "压缩",
+        "name": "名称：",
+        "namePlaceholder": "压缩包名称",
+        "type": "类型：",
+        "level": "压缩：",
+        "levelHelp": "<b>不压缩</b>——只把文件合成一个压缩包，瞬间完成。<br><b>快速</b>——压缩率稍低，但速度快。<br><b>标准</b>——兼顾速度和大小。<br><b>最大</b>——压缩包最小，但较慢。<br><br>照片、视频、音乐和游戏（jpg、mp4、mp3、apk、nsp…）本身已压缩，几乎不会变小——建议选择“不压缩”或“快速”。",
+        "password": "密码：",
+        "passwordAgain": "确认密码：",
+        "destination": "位置：",
+        "button": "创建",
+        "badName": "名称中含有不能用于文件名的字符。",
+        "chooseTitle": "要压缩哪些文件？",
+        "chooseButton": "压缩"
+    },
+    "password": {
+        "windowTitle": "密码",
+        "title": "“{name}”受密码保护",
+        "subtitle": "输入密码以继续。",
+        "placeholder": "密码",
+        "remember": "记住密码",
+        "open": "打开",
+        "checking": "正在检查…",
+        "wrong": "密码错误",
+        "mismatch": "两次输入的密码不一致",
+        "asciiHint": "ZIP 密码只能使用拉丁字母、数字和常用符号。",
+        "asciiOnly": "ZIP 密码只能使用拉丁字母、数字和符号。"
+    },
+    "setPassword": {
+        "windowTitle": "设置密码",
+        "changeWindowTitle": "更改密码",
+        "title": "为“{name}”设置密码",
+        "changeTitle": "“{name}”的新密码",
+        "button": "设置",
+        "changeButton": "更改",
+        "newFormat": "新格式：",
+        "newFormatNote": "{format} 格式无法保存密码。压缩包将以所选格式重新打包，旧文件会被删除。"
+    },
+    "removePassword": {
+        "title": "移除密码？",
+        "text": "“{name}”将重新打包且不带密码——任何人都能打开。",
+        "button": "移除密码"
+    },
+    "conflict": {
+        "title": "文件已存在",
+        "text": "此文件夹中已有“{name}”。\n\n确定要替换吗？被替换的文件无法恢复。",
+        "skip": "跳过",
+        "keepBoth": "保留两者",
+        "replace": "替换",
+        "applyToAll": "全部应用"
+    },
+    "extract": {
+        "windowTitle": "解压",
+        "titleAll": "解压“{name}”",
+        "titleSome": ["从“{name}”解压 {n} 个项目"],
+        "nextToArchive": "压缩包所在位置",
+        "subfolder": "创建文件夹“{name}”",
+        "button": "解压"
+    },
+    "delete": {
+        "title": "从压缩包删除？",
+        "textOne": "“{name}”将从压缩包中删除。此操作无法撤销。",
+        "textMany": ["{n} 个项目将从压缩包中删除。此操作无法撤销。"],
+        "button": "删除"
+    },
+    "edited": {
+        "title": "文件已更改",
+        "text": "“{name}”已更改。要更新到压缩包中吗？",
+        "button": "更新"
+    },
+    "nested": {
+        "saveTitle": "保存更改？",
+        "saveText": "内部的压缩包已更改。要把更改保存到“{name}”吗？",
+        "saveButton": "保存",
+        "readOnlyTitle": "无法保存更改",
+        "readOnlyText": "“{name}”无法修改，因此更改只保留在临时副本中。"
+    },
+    "path": {
+        "places": "常用文件夹",
+        "browse": "浏览…",
+        "chooseFolder": "选择文件夹",
+        "missingTitle": "文件夹不存在",
+        "missingText": "文件夹“{path}”不存在。要创建吗？",
+        "create": "创建"
+    },
+    "places": {
+        "home": "个人文件夹",
+        "desktop": "桌面",
+        "downloads": "下载",
+        "documents": "文稿",
+        "drive": "磁盘 {letter}"
+    },
+    "job": {
+        "creating": "正在压缩“{name}”",
+        "extracting": "正在解压“{name}”",
+        "deleting": "正在从“{name}”删除",
+        "adding": "正在添加到“{name}”",
+        "updating": "正在更新“{name}”",
+        "settingPassword": "正在为“{name}”设置密码",
+        "removingPassword": "正在移除“{name}”的密码",
+        "preparing": "正在准备…",
+        "amount": "{done} / {total}",
+        "speed": "{speed}/秒",
+        "leftSec": ["剩余 {n} 秒"],
+        "leftMin": ["剩余约 {n} 分钟"],
+        "cancelling": "正在取消…"
+    },
+    "preview": {
+        "loading": "正在加载预览…",
+        "needFfmpeg": "视频预览需要 ffmpeg（brew install ffmpeg）",
+        "locked": "受密码保护——输入密码后可预览",
+        "tooBig": "文件太大，无法预览"
+    },
+    "notify": {
+        "created": "压缩包已完成",
+        "extracted": "已解压"
+    },
+    "error": {
+        "needPassword": { "title": "需要密码", "text": "“{name}”受密码保护。" },
+        "wrongPassword": { "title": "密码错误", "text": "“{name}”的密码不正确。" },
+        "passwordCharset": { "title": "此密码不能用于 ZIP", "text": "ZIP 密码只能使用拉丁字母、数字和常用符号。要使用中文等其他文字的密码，请选择 7z。" },
+        "corrupt": { "title": "压缩包已损坏", "text": "无法读取“{name}”。它可能没有完整下载。" },
+        "unsupported": { "title": "Packix 无法打开此文件", "text": "“{name}”不是压缩包，或其格式 Packix 不认识。" },
+        "missingVolume": { "title": "缺少压缩包分卷", "text": "缺少分卷：{parts}。请把它们放到其他分卷旁边后重试。" },
+        "noSpace": { "title": "空间不足", "text": "需要 {need}，可用 {free}。" },
+        "noAccess": { "title": "无访问权限", "text": "没有写入权限：{path}。请选择其他文件夹。" },
+        "notFound": { "title": "找不到文件", "text": "“{name}”已不在原处。" },
+        "readOnly": { "title": "无法修改此压缩包", "text": "此格式只能读取：可以解压，不能修改。" },
+        "cancelled": { "title": "已取消" },
+        "engineMissing": { "title": "找不到 7-Zip", "text": "Packix 内缺少 7-Zip 引擎。请重新安装 Packix。" },
+        "failed": { "title": "操作未完成", "text": "出了点问题。详细信息请查看日志。" }
+    },
+    "log": {
+        "title": "日志",
+        "windowTitle": "Packix 日志",
+        "newErrors": ["日志——{n} 个新错误"],
+        "empty": "暂无错误。",
+        "copyAll": "全部拷贝",
+        "clear": "清除",
+        "clearTitle": "清除日志？",
+        "clearText": "所有错误记录都将被删除。",
+        "fileAt": "日志：{path}"
+    },
+    "open": {
+        "title": "打开压缩包",
+        "filter": "压缩包",
+        "allFiles": "所有文件"
+    },
+    "tray": {
+        "open": "打开压缩包…",
+        "create": "创建压缩包…",
+        "job": "进行中：{title}",
+        "jobPercent": "进行中：{title} — {percent}%",
+        "loginItem": "登录时打开",
+        "language": "语言",
+        "settings": "设置…",
+        "about": "关于 Packix",
+        "quit": "退出"
+    },
+    "launcher": {
+        "drop": "把压缩包拖到这里打开，\n或把文件拖到这里进行压缩"
+    },
+    "settings": {
+        "windowTitle": "Packix 设置",
+        "language": "语言：",
+        "languageFiles": "语言文件：{path}",
+        "languageBroken": "文件有错误，第 {line} 行",
+        "copyPath": "拷贝路径",
+        "isDefault": "Packix 是默认的压缩工具。",
+        "notDefault": "压缩包由其他应用打开。",
+        "makeDefault": "设为默认压缩工具",
+        "passwords": "已保存的密码",
+        "showPasswords": "显示密码",
+        "forget": "删除",
+        "noPasswords": "尚未保存任何密码"
+    },
+    "welcome": {
+        "windowTitle": "Packix",
+        "title": "欢迎使用 Packix",
+        "default": "将 Packix 设为默认压缩工具",
+        "login": "登录时打开"
+    },
+    "about": {
+        "windowTitle": "关于 Packix",
+        "text": "适用于 macOS 和 Windows 的压缩工具。\n引擎：7-Zip {engine} — © Igor Pavlov，GNU LGPL。",
+        "license": "7-Zip 许可证"
+    },
+    "type": {
+        "folder": "文件夹",
+        "gameFolder": "游戏文件夹",
+        "default": {
+            "file": "{ext} 文件",
+            "noExt": "文件",
+            "archive": "{ext} 压缩包",
+            "video": "{ext} 视频",
+            "image": "{ext} 图像",
+            "audio": "{ext} 音频",
+            "code": "{ext} 代码"
+        },
+        "apk": "Android 应用",
+        "apkBundle": "Android 安装包",
+        "aab": "Android 应用包（AAB）",
+        "exe": "Windows 程序",
+        "msi": "Windows 安装程序",
+        "dll": "Windows 库",
+        "bat": "Windows 脚本",
+        "svg": "SVG 矢量图像",
+        "txt": "文本文件",
+        "log": "日志",
+        "md": "Markdown 文本",
+        "config": "设置文件",
+        "csv": "CSV 表格",
+        "nfo": "说明",
+        "rtf": "RTF 文档",
+        "document": "文档",
+        "spreadsheet": "电子表格",
+        "presentation": "演示文稿",
+        "book": "电子书",
+        "pdf": "PDF 文档",
+        "json": "JSON 数据",
+        "data": "数据",
+        "sfo": "游戏参数（SFO）",
+        "vpk": "PS Vita 应用（VPK）",
+        "nsp": "Switch 游戏（NSP）",
+        "nsz": "Switch 游戏（NSZ，已压缩）",
+        "xci": "Switch 卡带（XCI）",
+        "xcz": "Switch 卡带（XCZ，已压缩）",
+        "nro": "Switch 程序（NRO）",
+        "nca": "Switch 内容（NCA）",
+        "iso": "ISO 光盘映像",
+        "cso": "压缩的 PSP 映像（CSO）",
+        "discImage": "光盘映像",
+        "dmg": "macOS 磁盘映像",
+        "pbp": "PSP 游戏（PBP）",
+        "pkg": "PS3 / PS Vita 安装包（PKG）",
+        "rap": "PS3 许可证（RAP）",
+        "rif": "许可证（RIF）",
+        "edat": "受保护的数据（EDAT）",
+        "keys": "密钥",
+        "tik": "Switch 票据",
+        "sprx": "PS3 插件（SPRX）",
+        "suprx": "PS Vita 插件（SUPRX）",
+        "skprx": "PS Vita 内核插件（SKPRX）",
+        "prx": "PSP 插件（PRX）",
+        "elf": "可执行文件",
+        "save": "存档",
+        "eboot": "游戏启动文件"
+    }
+}

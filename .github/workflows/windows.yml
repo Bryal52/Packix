@@ -1,0 +1,109 @@
+name: Windows build
+
+# Builds Packix for Windows, runs the tests, makes the installer and attaches it to a release.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to attach the installer to (empty: just build)"
+        required: false
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-qt6-base
+            mingw-w64-ucrt-x86_64-qt6-imageformats
+
+      - name: Install 7-Zip and Inno Setup
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "C:\Program Files\7-Zip\7z.exe")) { choco install 7zip -y --no-progress }
+          choco install innosetup -y --no-progress
+
+      - name: Build
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
+
+      - name: Tests
+        env:
+          PACKIX_7ZZ: C:\Program Files\7-Zip\7z.exe
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          ./build/tst_core.exe
+          ./build/tst_ui.exe
+
+      - name: Collect Packix with everything it needs
+        run: |
+          VERSION=$(sed -n 's/^project(Packix VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          mkdir -p dist/Packix
+          cp build/Packix.exe build/packix.ico dist/Packix/
+          cp -r build/shared dist/Packix/
+          # The engine: 7-Zip's own console program and its library, with the official license.
+          cp "/c/Program Files/7-Zip/7z.exe" "/c/Program Files/7-Zip/7z.dll" dist/Packix/
+          cp "/c/Program Files/7-Zip/License.txt" dist/Packix/7zip-License.txt
+          DEPLOY=$(command -v windeployqt6 || command -v windeployqt || echo /ucrt64/share/qt6/bin/windeployqt.exe)
+          "$DEPLOY" --release --no-translations --compiler-runtime dist/Packix/Packix.exe
+          # Qt's own libraries come from windeployqt; their MSYS2 dependencies are added here.
+          for pass in 1 2 3 4 5; do
+            find dist/Packix -name '*.exe' -o -name '*.dll' | while read -r f; do
+              ldd "$f" | awk '/\/ucrt64\// {print $3}'
+            done | sort -u | while read -r dll; do
+              [ -f "dist/Packix/$(basename "$dll")" ] || cp "$dll" dist/Packix/
+            done
+          done
+          ls dist/Packix | head -80
+
+      - name: Check that Packix starts
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath dist\Packix\Packix.exe -ArgumentList '--smoke-test' -PassThru -RedirectStandardOutput smoke.txt
+          if (-not $p.WaitForExit(60000)) { Stop-Process -Id $p.Id -Force; throw "Packix did not quit in time" }
+          Get-Content smoke.txt
+          if ($p.ExitCode -ne 0) { throw "Packix exited with code $($p.ExitCode)" }
+
+      - name: Installer and portable zip
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DVersion=$env:VERSION" installer\packix.iss
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed" }
+          Compress-Archive -Path dist\Packix -DestinationPath "dist\Packix-$env:VERSION-windows-x64-portable.zip"
+          Get-ChildItem dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Packix-windows-x64
+          path: |
+            dist/Packix-*-Setup.exe
+            dist/Packix-*-portable.zip
+
+      - name: Attach to release
+        if: github.event_name == 'release' || inputs.tag != ''
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          gh release upload $env:TAG "dist\Packix-$env:VERSION-Setup.exe" "dist\Packix-$env:VERSION-windows-x64-portable.zip" --clobber --repo $env:GITHUB_REPOSITORY

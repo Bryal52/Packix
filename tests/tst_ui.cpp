@@ -95,20 +95,28 @@ private slots:
         }
     }
 
-    void englishComplete()
+    // Every built-in language has every Russian key, with as many plural forms as its rule needs.
+    void languagesComplete()
     {
-        QHash<QString, QJsonValue> ru, en;
+        QHash<QString, QJsonValue> ru;
         flatten(Shared::loadFile(Shared::path(QStringLiteral("lang/ru.json"))), QString(), ru);
-        flatten(Shared::loadFile(Shared::path(QStringLiteral("lang/en.json"))), QString(), en);
-        QStringList problems;
-        for (auto it = ru.cbegin(); it != ru.cend(); ++it) {
-            if (!en.contains(it.key()))
-                problems << it.key();
-            else if (it->isArray() && en.value(it.key()).toArray().size() != 2)
-                problems << it.key() + QStringLiteral(" (needs 2 forms)");
+        const QStringList files = QDir(Shared::path(QStringLiteral("lang"))).entryList({QStringLiteral("*.json")});
+        QVERIFY(files.contains(QStringLiteral("en.json")));
+        QVERIFY(files.contains(QStringLiteral("zh.json")));
+        for (const QString& file : files) {
+            QHash<QString, QJsonValue> other;
+            flatten(Shared::loadFile(Shared::path(QStringLiteral("lang/") + file)), QString(), other);
+            const QString rule = other.value(QStringLiteral("_meta.plural")).toString();
+            const int forms = rule == QLatin1String("ru") ? 3 : rule == QLatin1String("one") ? 2 : 1;
+            QStringList problems;
+            for (auto it = ru.cbegin(); it != ru.cend(); ++it) {
+                if (!other.contains(it.key()))
+                    problems << it.key();
+                else if (it->isArray() && other.value(it.key()).toArray().size() != forms)
+                    problems << it.key() + QStringLiteral(" (needs %1 forms)").arg(forms);
+            }
+            QVERIFY2(problems.isEmpty(), qPrintable(file + QStringLiteral(": ") + problems.join(QStringLiteral(", "))));
         }
-        QVERIFY2(problems.isEmpty(), qPrintable(problems.join(QStringLiteral(", "))));
-        QCOMPARE(en.value(QStringLiteral("_meta.plural")).toString(), QStringLiteral("one"));
     }
 
     void russianPlurals()
@@ -157,6 +165,15 @@ private slots:
         QCOMPARE(L("common.cancel"), QStringLiteral("Cancel"));
         QCOMPARE(L("conflict.keepBoth"), QStringLiteral("Оставить оба"));   // missing in en: Russian
         QCOMPARE(Ln("delete.textMany", 5).left(10), QStringLiteral("5 объектов"));
+        QVERIFY(Lang::instance().setLanguage(QStringLiteral("ru")));
+    }
+
+    void chinese()
+    {
+        QVERIFY(Lang::instance().setLanguage(QStringLiteral("zh")));
+        QCOMPARE(Ln("files.count", 1), QStringLiteral("1 个文件"));
+        QCOMPARE(Ln("files.count", 25), QStringLiteral("25 个文件"));
+        QCOMPARE(L("conflict.keepBoth"), QStringLiteral("保留两者"));
         QVERIFY(Lang::instance().setLanguage(QStringLiteral("ru")));
     }
 
