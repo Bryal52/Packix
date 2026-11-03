@@ -4,6 +4,7 @@
 #include "ArchiveModel.h"
 #include "Archiver.h"
 #include "Dialogs.h"
+#include "Donate.h"
 #include "Effects.h"
 #include "Formats.h"
 #include "Icons.h"
@@ -346,6 +347,7 @@ void ArchiveWindow::buildUi()
     bottom->addWidget(m_statusLeft);
     bottom->addStretch();
     bottom->addWidget(m_statusRight);
+    bottom->addWidget(new DonateButton(this));
     bottom->addWidget(new LogButton(this));
 
     auto* layout = new QVBoxLayout(this);

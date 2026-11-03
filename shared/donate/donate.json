@@ -1,0 +1,8 @@
+{
+    "image": "donate/kitten.png",
+    "holder": "MAVLONOV UMIDJON",
+    "cards": [
+        { "brand": "visa", "number": "4916990300073175" },
+        { "brand": "mastercard", "number": "5321540013050170" }
+    ]
+}

@@ -36,5 +36,6 @@ QIcon bookLockIcon(bool open = false);
 QIcon globeIcon();
 QIcon helpIcon();
 QIcon trayIcon();   // single-colour template for the menu bar
+QIcon coffeeIcon();   // the donate button
 
 } // namespace packix::ui

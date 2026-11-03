@@ -205,6 +205,15 @@
         "filter": "Архивы",
         "allFiles": "Все файлы"
     },
+    "donate": {
+        "tooltip": "Поддержать автора",
+        "windowTitle": "Поддержать Packix",
+        "title": "Спасибо, что пользуетесь Packix!",
+        "copy": "Скопировать номер",
+        "copied": "Скопировано ✓",
+        "close": "Закрыть",
+        "note": "Donations are completely optional — Packix is free and always will be. If you'd like to buy me a coffee, here are my cards. Thank you!"
+    },
     "tray": {
         "open": "Открыть архив…",
         "create": "Создать архив…",
@@ -214,6 +223,7 @@
         "language": "Язык",
         "settings": "Настройки…",
         "about": "О программе",
+        "donate": "Поддержать автора ☕",
         "quit": "Выйти"
     },
     "launcher": {

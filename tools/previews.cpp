@@ -4,10 +4,12 @@
 #include "ArchiveWindow.h"
 #include "Archiver.h"
 #include "CreateDialog.h"
+#include "Donate.h"
 #include "Effects.h"
 #include "ExtractDialog.h"
 #include "Icons.h"
 #include "Lang.h"
+#include "PathField.h"
 #include "Theme.h"
 #include "Thermometer.h"
 
@@ -16,6 +18,7 @@
 #include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPushButton>
 #include <QPainter>
 #include <QTemporaryDir>
@@ -37,10 +40,22 @@ void write(const QString& path, const QByteArray& data)
     f.write(data);
 }
 
+// Sharp pictures for slides: drawn at 2× whatever screen the widget is (or is not yet) on.
+qreal g_scale = 2.0;
+
+QPixmap shot(QWidget* w)
+{
+    QPixmap pm(w->size() * g_scale);
+    pm.setDevicePixelRatio(g_scale);
+    pm.fill(Qt::transparent);
+    w->render(&pm);
+    return pm;
+}
+
 void save(QWidget* w, const QString& file)
 {
     w->adjustSize();
-    w->grab().save(file);
+    shot(w).save(file);
 }
 
 } // namespace
@@ -87,8 +102,22 @@ int main(int argc, char* argv[])
     Archiver::changePassword(info, pr);
 
     {
+        // Filled in, as someone is about to press "Создать".
         CreateDialog d({src});
+        d.show();
+        const auto edits = d.findChildren<QLineEdit*>();
+        edits.at(0)->setText(QStringLiteral("Отпуск 2025"));
+        edits.at(1)->setText(QStringLiteral("Secret1"));
+        edits.at(2)->setText(QStringLiteral("Secret1"));
+        d.findChild<PathField*>()->setPath(QDir::homePath() + QStringLiteral("/Desktop"));
+        // The fade effect of the password block is drawn off place by render() at 2×; not needed here.
+        edits.at(1)->parentWidget()->setGraphicsEffect(nullptr);
+        for (int i = 0; i < 30; ++i) {
+            QApplication::processEvents();
+            QThread::msleep(16);
+        }
         save(&d, out + QStringLiteral("/1-create-zip.png"));
+        d.hide();
     }
     {
         ExtractDialog d(zip, 0);
@@ -98,14 +127,14 @@ int main(int argc, char* argv[])
         auto* w = new ArchiveWindow(zip);
         w->start();
         QApplication::processEvents();
-        w->grab().save(out + QStringLiteral("/3-archive.png"));
+        shot(w).save(out + QStringLiteral("/3-archive.png"));
         w->close();
     }
     {
         auto* w = new ArchiveWindow(sevenZ);
         w->start();
         QApplication::processEvents();
-        w->grab().save(out + QStringLiteral("/4-locked.png"));
+        shot(w).save(out + QStringLiteral("/4-locked.png"));
         w->close();
     }
     {
@@ -122,9 +151,9 @@ int main(int argc, char* argv[])
             QApplication::processEvents();
             QThread::msleep(16);
         }
-        box.grab().save(out + QStringLiteral("/5-thermometer.png"));
+        shot(&box).save(out + QStringLiteral("/5-thermometer.png"));
         // Close-up of one, four times bigger.
-        const QPixmap one = box.layout()->itemAt(1)->widget()->grab();
+        const QPixmap one = shot(box.layout()->itemAt(1)->widget());
         one.scaled(one.size() * 4).save(out + QStringLiteral("/5b-thermometer-zoom.png"));
     }
     {
@@ -163,7 +192,20 @@ int main(int argc, char* argv[])
             QApplication::processEvents();
             QThread::msleep(16);
         }
-        job.grab().save(out + QStringLiteral("/7-job.png"));
+        shot(&job).save(out + QStringLiteral("/7-job.png"));
+    }
+    {
+        showDonateWindow();
+        for (int i = 0; i < 10; ++i) {
+            QApplication::processEvents();
+            QThread::msleep(16);
+        }
+        for (QWidget* w : QApplication::topLevelWidgets()) {
+            if (w->isVisible() && w->windowTitle() == L("donate.windowTitle")) {
+                save(w, out + QStringLiteral("/8-donate.png"));
+                w->close();
+            }
+        }
     }
     {
         QImage img(360, 120, QImage::Format_ARGB32_Premultiplied);

@@ -205,6 +205,15 @@
         "filter": "Archives",
         "allFiles": "All files"
     },
+    "donate": {
+        "tooltip": "Support the author",
+        "windowTitle": "Support Packix",
+        "title": "Thank you for using Packix!",
+        "copy": "Copy number",
+        "copied": "Copied ✓",
+        "close": "Close",
+        "note": "Donations are completely optional — Packix is free and always will be. If you'd like to buy me a coffee, here are my cards. Thank you!"
+    },
     "tray": {
         "open": "Open Archive…",
         "create": "Create Archive…",
@@ -214,6 +223,7 @@
         "language": "Language",
         "settings": "Settings…",
         "about": "About Packix",
+        "donate": "Support the author ☕",
         "quit": "Quit"
     },
     "launcher": {

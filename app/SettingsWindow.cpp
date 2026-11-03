@@ -1,5 +1,6 @@
 #include "SettingsWindow.h"
 
+#include "Donate.h"
 #include "Icons.h"
 #include "Lang.h"
 #include "LogViewer.h"
@@ -117,6 +118,7 @@ SettingsWindow::SettingsWindow() : QWidget(nullptr, Qt::Window)
 
     auto* bottom = new QHBoxLayout;
     bottom->addStretch();
+    bottom->addWidget(new DonateButton(this));
     bottom->addWidget(new LogButton(this));
 
     auto* layout = new QVBoxLayout(this);

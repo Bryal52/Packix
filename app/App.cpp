@@ -3,6 +3,7 @@
 #include "Actions.h"
 #include "ArchiveWindow.h"
 #include "Dialogs.h"
+#include "Donate.h"
 #include "Effects.h"
 #include "Formats.h"
 #include "Icons.h"
@@ -245,6 +246,7 @@ void App::rebuildMenu()
     }
     m_menu->addAction(L("tray.settings"), this, &App::showSettings);
     m_menu->addAction(L("tray.about"), this, &App::showAbout);
+    m_menu->addAction(coffeeIcon(), L("tray.donate"), this, [] { showDonateWindow(); });
     m_menu->addSeparator();
     m_menu->addAction(L("tray.quit"), qApp, &QApplication::quit);
 }
@@ -294,6 +296,7 @@ void App::showLauncher()
     buttons->addWidget(open);
     buttons->addWidget(create);
     buttons->addStretch();
+    buttons->addWidget(new DonateButton(w));   // the corner
     auto* layout = new QVBoxLayout(w);
     layout->setContentsMargins(14, 14, 14, 14);
     layout->addWidget(zone, 1);

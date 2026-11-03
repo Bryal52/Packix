@@ -15,13 +15,13 @@
   <img src="https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus" alt="C++20">
   <img src="https://img.shields.io/badge/Qt-6-41CD52?logo=qt" alt="Qt 6">
   <img src="https://img.shields.io/badge/%D0%B4%D0%B2%D0%B8%D0%B6%D0%BE%D0%BA-7--Zip-6b6b6b" alt="Движок 7-Zip">
-  <a href="https://github.com/Bryal52/Packix/releases/latest"><img src="https://img.shields.io/badge/%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F-1.0.0-d24a3e" alt="Версия 1.0.0"></a>
+  <a href="https://github.com/Bryal52/Packix/releases/latest"><img src="https://img.shields.io/badge/%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F-1.0.1-d24a3e" alt="Версия 1.0.1"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.0.dmg"><img src="https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C_%D0%B4%D0%BB%D1%8F_macOS-1.0.0-000000?style=for-the-badge&logo=apple&logoColor=white" alt="Скачать для macOS" height="36"></a>
+  <a href="https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.1.dmg"><img src="https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C_%D0%B4%D0%BB%D1%8F_macOS-1.0.1-000000?style=for-the-badge&logo=apple&logoColor=white" alt="Скачать для macOS" height="36"></a>
   &nbsp;
-  <a href="https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.0-Setup.exe"><img src="https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C_%D0%B4%D0%BB%D1%8F_Windows-1.0.0-0078D4?style=for-the-badge&logo=windows&logoColor=white" alt="Скачать для Windows" height="36"></a>
+  <a href="https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.1-Setup.exe"><img src="https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C_%D0%B4%D0%BB%D1%8F_Windows-1.0.1-0078D4?style=for-the-badge&logo=windows&logoColor=white" alt="Скачать для Windows" height="36"></a>
 </p>
 
 <p align="center">
@@ -102,9 +102,9 @@ zip, 7z, rar и rar5, tar, gz, bz2, xz, zst, iso, dmg, cab, arj, lzh, wim, cpio,
 
 ## 💾 Установка
 
-**macOS 27+ (Apple Silicon):** скачайте `Packix-1.0.0.dmg`, перетащите Packix в «Программы». При первом запуске отметьте «Сделать архиватором по умолчанию» и «Запускать при входе». Пункт «Архивировать» появится в меню Finder: правый клик → Быстрые действия (если его нет — включите в Системные настройки → Клавиатура → Сочетания клавиш → Службы).
+**macOS 27+ (Apple Silicon):** скачайте `Packix-1.0.1.dmg`, перетащите Packix в «Программы». При первом запуске отметьте «Сделать архиватором по умолчанию» и «Запускать при входе». Пункт «Архивировать» появится в меню Finder: правый клик → Быстрые действия (если его нет — включите в Системные настройки → Клавиатура → Сочетания клавиш → Службы).
 
-**Windows 10 / 11 (x64):** скачайте `Packix-1.0.0-Setup.exe` — права администратора не нужны. Установщик добавит «Архивировать в Packix» в меню Проводника и предложит сделать Packix архиватором по умолчанию. Есть и переносная версия — `Packix-1.0.0-windows-x64-portable.zip`.
+**Windows 10 / 11 (x64):** скачайте `Packix-1.0.1-Setup.exe` — права администратора не нужны. Установщик добавит «Архивировать в Packix» в меню Проводника и предложит сделать Packix архиватором по умолчанию. Есть и переносная версия — `Packix-1.0.1-windows-x64-portable.zip`.
 
 ## 🛠 Сборка из исходников
 
@@ -127,6 +127,18 @@ shared/     данные без хардкода: форматы, уровни �
 tests/      тесты ядра и интерфейса
 ```
 
+## ☕ Поддержать
+
+> Donations are completely optional — Packix is free and always will be. If you'd like to buy me a coffee, here are my cards. Thank you!
+
+| | |
+|---|---|
+| Visa | `4916 9903 0007 3175` |
+| Mastercard | `5321 5400 1305 0170` |
+| Владелец | MAVLONOV UMIDJON |
+
+В самом Packix — кнопка с чашкой кофе в правом нижнем углу окна.
+
 ## 🔗 Родственный проект
 
 [**Folix**](https://github.com/Bryal52/Folix) — двухпанельный файловый менеджер для macOS и Windows. Packix — его красный брат.
@@ -141,10 +153,10 @@ Packix использует [7-Zip](https://www.7-zip.org) © Igor Pavlov (GNU L
 
 **Packix** is a beautiful, fast archiver for macOS and Windows that lives in the menu bar / tray. It opens zip, 7z, rar, tar and two dozen more formats (including multi-part archives), handles password-protected archives (even with encrypted file names), and archives files straight from Finder or File Explorer via the right-click menu. Highlights: a mercury-thermometer progress bar, hover previews, drag in / drag out, nested archives, safe extraction, saved passwords in Keychain / Credential Manager. Interface in Russian, English and Chinese; add your own language by dropping a JSON file into the language folder.
 
-[Download for macOS](https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.0.dmg) · [Download for Windows](https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.0-Setup.exe)
+[Download for macOS](https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.1.dmg) · [Download for Windows](https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.1-Setup.exe)
 
 ## 中文
 
 **Packix** 是一款适用于 macOS 和 Windows 的美观、快速的压缩工具，常驻菜单栏 / 系统托盘。支持 zip、7z、rar、tar 等二十多种格式（包括分卷压缩包），可打开带密码的压缩包（连文件名加密的也可以），并能在访达或文件资源管理器中右键直接压缩文件。特色：水银温度计式的进度条、悬停预览、拖入拖出、嵌套压缩包、安全解压、密码保存在钥匙串 / 凭据管理器中。界面支持俄语、英语和简体中文。
 
-[下载 macOS 版](https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.0.dmg) · [下载 Windows 版](https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.0-Setup.exe)
+[下载 macOS 版](https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.1.dmg) · [下载 Windows 版](https://github.com/Bryal52/Packix/releases/latest/download/Packix-1.0.1-Setup.exe)

@@ -729,6 +729,37 @@ QIcon helpIcon()
     });
 }
 
+QIcon coffeeIcon()
+{
+    return renderThemed(QStringLiteral("coffee"), [](QPainter& p) {
+        const QColor c = Theme::get().color("accent");
+        // cup
+        QPainterPath cup;
+        cup.moveTo(6, 14);
+        cup.lineTo(22, 14);
+        cup.lineTo(20.6, 25);
+        cup.quadTo(20.2, 28, 17.2, 28);
+        cup.lineTo(10.8, 28);
+        cup.quadTo(7.8, 28, 7.4, 25);
+        cup.closeSubpath();
+        p.setPen(Qt::NoPen);
+        p.setBrush(c);
+        p.drawPath(cup);
+        // handle
+        p.setBrush(Qt::NoBrush);
+        p.setPen(QPen(c, 2.4, Qt::SolidLine, Qt::RoundCap));
+        p.drawArc(QRectF(19, 16, 8, 8), -90 * 16, 180 * 16);
+        // steam
+        p.setPen(QPen(c, 1.7, Qt::SolidLine, Qt::RoundCap));
+        for (qreal x : {10.5, 14.0, 17.5}) {
+            QPainterPath s;
+            s.moveTo(x, 11.5);
+            s.cubicTo(x - 2, 9, x + 2, 7, x, 4.5);
+            p.drawPath(s);
+        }
+    });
+}
+
 QIcon trayIcon()
 {
     static const QIcon icon = [] {

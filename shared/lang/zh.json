@@ -205,6 +205,15 @@
         "filter": "压缩包",
         "allFiles": "所有文件"
     },
+    "donate": {
+        "tooltip": "支持作者",
+        "windowTitle": "支持 Packix",
+        "title": "感谢使用 Packix！",
+        "copy": "复制卡号",
+        "copied": "已复制 ✓",
+        "close": "关闭",
+        "note": "Donations are completely optional — Packix is free and always will be. If you'd like to buy me a coffee, here are my cards. Thank you!"
+    },
     "tray": {
         "open": "打开压缩包…",
         "create": "创建压缩包…",
@@ -214,6 +223,7 @@
         "language": "语言",
         "settings": "设置…",
         "about": "关于 Packix",
+        "donate": "支持作者 ☕",
         "quit": "退出"
     },
     "launcher": {

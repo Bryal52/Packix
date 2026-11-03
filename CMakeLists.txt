@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(Packix VERSION 1.0.0 LANGUAGES CXX)
+project(Packix VERSION 1.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -43,6 +43,7 @@ set(PACKIX_UI_SOURCES
     dialogs/CreateDialog.cpp dialogs/CreateDialog.h
     dialogs/ExtractDialog.cpp dialogs/ExtractDialog.h
     dialogs/Actions.cpp dialogs/Actions.h
+    dialogs/Donate.cpp dialogs/Donate.h
     platform/Platform.h
 )
 if(APPLE)
@@ -167,3 +168,7 @@ target_link_libraries(Packix PRIVATE packix_ui Qt6::Network)
 add_executable(previews EXCLUDE_FROM_ALL tools/previews.cpp app/ArchiveModel.cpp app/ArchiveWindow.cpp app/Preview.cpp)
 target_include_directories(previews PRIVATE app)
 target_link_libraries(previews PRIVATE packix_ui)
+
+# Development helper: draws shared/donate/kitten.png (kept in the repository, replaceable).
+add_executable(makekitten EXCLUDE_FROM_ALL tools/makekitten.cpp)
+target_link_libraries(makekitten PRIVATE Qt6::Gui)
