@@ -324,6 +324,38 @@ private slots:
         QVERIFY(paths(info).contains(QStringLiteral("new.txt")));
     }
 
+    void awkwardNames()
+    {
+        QTemporaryDir tmp;
+        // A name that looks like a switch, and a list too long to pass inline.
+        write(tmp.filePath(QStringLiteral("src/-p-not-a-switch.txt")), "x");
+        write(tmp.filePath(QStringLiteral("src/@not-a-list.txt")), "y");
+        QStringList many;
+        for (int i = 0; i < 400; ++i) {
+            const QString name = QStringLiteral("src/many/file-with-a-rather-long-name-number-%1.txt").arg(i);
+            write(tmp.filePath(name), "z");
+            many << tmp.filePath(name);
+        }
+        QString archive;
+        QVERIFY(makeArchive(tmp.path(), QStringLiteral("odd.zip"), QStringLiteral("zip"),
+                            {tmp.filePath(QStringLiteral("src/-p-not-a-switch.txt")), tmp.filePath(QStringLiteral("src/@not-a-list.txt"))},
+                            {}, &archive).ok());
+        ArchiveInfo info;
+        QVERIFY(Archiver::open(archive, {}, info).ok());
+        QCOMPARE(paths(info), QStringList({QStringLiteral("-p-not-a-switch.txt"), QStringLiteral("@not-a-list.txt")}));
+        Archiver::ExtractRequest req;
+        req.archive = archive;
+        req.destination = tmp.filePath(QStringLiteral("out"));
+        req.items = {QStringLiteral("-p-not-a-switch.txt")};
+        QVERIFY(Archiver::extract(req).ok());
+        QCOMPARE(read(req.destination + QStringLiteral("/-p-not-a-switch.txt")), QByteArray("x"));
+
+        QString big;
+        QVERIFY(makeArchive(tmp.path(), QStringLiteral("many.7z"), QStringLiteral("7z"), many, {}, &big).ok());
+        QVERIFY(Archiver::open(big, {}, info).ok());
+        QCOMPARE(info.fileCount(), 400);
+    }
+
     void readOnly()
     {
         ArchiveInfo info;

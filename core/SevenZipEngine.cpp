@@ -11,6 +11,7 @@
 #include <QStandardPaths>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
+#include <QThread>
 
 #include <filesystem>
 
@@ -215,25 +216,38 @@ void parseListing(const QString& text, ArchiveInfo& out)
     }
 }
 
-// Names go through a list file so that nothing in them can look like a switch.
-class ListFile {
+// The archive and the names inside it, at the end of a 7-Zip command. They follow "--", so nothing
+// in them can look like a switch. A very long list (thousands of files) would not fit on a Windows
+// command line and goes through a list file instead.
+class Names {
 public:
-    explicit ListFile(const QStringList& names)
+    Names(const QString& archive, const QStringList& names)
     {
-        if (names.isEmpty() || !m_file.open())
-            return;
+        qsizetype length = archive.size();
         for (const QString& n : names)
-            m_file.write(n.toUtf8() + '\n');
-        // Closed but kept: Windows does not let 7-Zip read a file that is still open here.
-        m_file.close();
-        m_ok = true;
+            length += n.size() + 3;
+        if (length < kMaxInline) {
+            m_args << QStringLiteral("--");
+            if (!archive.isEmpty())
+                m_args << archive;
+            m_args << names;
+            return;
+        }
+        if (!archive.isEmpty())
+            m_args << archive;   // absolute, so it cannot look like a switch either
+        if (m_file.open()) {
+            for (const QString& n : names)
+                m_file.write(n.toUtf8() + '\n');
+            m_file.close();   // Windows: 7-Zip cannot read a file that is still open here
+            m_args << QLatin1Char('@') + m_file.fileName();
+        }
     }
-    // Empty list = no argument at all (= everything).
-    QStringList args() const { return m_ok ? QStringList{QLatin1Char('@') + m_file.fileName()} : QStringList(); }
+    QStringList args() const { return m_args; }
 
 private:
+    static constexpr qsizetype kMaxInline = 8000;
+    QStringList m_args;
     QTemporaryFile m_file{QDir::tempPath() + QStringLiteral("/packix-list-XXXXXX.txt")};
-    bool m_ok = false;
 };
 
 // A folder means the folder and everything in it.
@@ -316,6 +330,20 @@ QString SevenZipEngine::version() const
 
 SevenZipEngine::Run SevenZipEngine::run(const QStringList& args, const QString& workDir, const QByteArray& input,
                                         Progress* progress) const
+{
+    // A fresh list file can be held for a moment by an antivirus scan on Windows: try again.
+    Run r;
+    for (int attempt = 0; attempt < 5; ++attempt) {
+        r = runOnce(args, workDir, input, progress);
+        if (!(r.output.contains(QLatin1String("listfile")) && r.output.contains(QLatin1String("another process"))))
+            break;
+        QThread::msleep(300);
+    }
+    return r;
+}
+
+SevenZipEngine::Run SevenZipEngine::runOnce(const QStringList& args, const QString& workDir, const QByteArray& input,
+                                            Progress* progress) const
 {
     Run r;
     if (!available()) {
@@ -433,11 +461,11 @@ Status SevenZipEngine::list(const QString& archive, const Format& format, const 
     Run r;
     if (format.wrapsTar) {
         r = pipe(QStringList{QStringLiteral("x"), QStringLiteral("-so"), QStringLiteral("-bsp0"), QStringLiteral("-bse2")}
-                     + kCommon + QStringList{abs},
+                     + kCommon + Names(abs, {}).args(),
                  QStringList{QStringLiteral("l"), QStringLiteral("-slt"), QStringLiteral("-si"), QStringLiteral("-ttar")} + kCommon,
                  {}, progress);
     } else {
-        r = run(QStringList{QStringLiteral("l"), QStringLiteral("-slt")} + kCommon + QStringList{abs}, {},
+        r = run(QStringList{QStringLiteral("l"), QStringLiteral("-slt")} + kCommon + Names(abs, {}).args(), {},
                 passwordInput(password, 1), progress);
     }
     Status st = classify(r, !password.isEmpty());
@@ -464,19 +492,21 @@ Status SevenZipEngine::extract(const QString& archive, const Format& format, con
                                const QStringList& items, const QString& password, Progress* progress)
 {
     const QString abs = QFileInfo(archive).absoluteFilePath();
-    const ListFile list(withContents(items));
     const QString out = QStringLiteral("-o") + QDir(destDir).absolutePath();
+    // Kept alive while 7-Zip runs: a long list lives in a temporary file.
+    const Names selected({}, withContents(items));
+    const Names archiveAndSelected(abs, withContents(items));
     Run r;
     if (format.wrapsTar) {
         r = pipe(QStringList{QStringLiteral("x"), QStringLiteral("-so"), QStringLiteral("-bsp2"), QStringLiteral("-bse2")}
-                     + kCommon + QStringList{abs},
+                     + kCommon + Names(abs, {}).args(),
                  QStringList{QStringLiteral("x"), QStringLiteral("-si"), QStringLiteral("-ttar"), QStringLiteral("-aoa"), out,
                              QStringLiteral("-bsp0"), QStringLiteral("-bse1")}
-                     + kCommon + list.args(),
+                     + kCommon + selected.args(),
                  {}, progress);
     } else {
         r = run(QStringList{QStringLiteral("x"), QStringLiteral("-aoa"), out, QStringLiteral("-bsp1"), QStringLiteral("-bse1")}
-                    + kCommon + QStringList{abs} + list.args(),
+                    + kCommon + archiveAndSelected.args(),
                 {}, passwordInput(password, 1), progress);
     }
     return classify(r, !password.isEmpty());
@@ -491,18 +521,19 @@ Status SevenZipEngine::create(const CreateRequest& req, Progress* progress)
     QStringList exclude;
     for (const QString& x : req.exclude)
         exclude << QStringLiteral("-xr!") + x;
-    const ListFile list(req.inputs);
     const QString output = QFileInfo(req.output).absoluteFilePath();
+    const Names inputs({}, req.inputs);
+    const Names outputAndInputs(output, req.inputs);
 
     Run r;
     if (f.wrapsTar) {
         const QString tarName = Formats::instance().splitName(QFileInfo(output).fileName()).first + QStringLiteral(".tar");
         r = pipe(QStringList{QStringLiteral("a"), QStringLiteral("-ttar"), QStringLiteral("-so"), QStringLiteral("-an"),
                              QStringLiteral("-snl"), QStringLiteral("-bsp2"), QStringLiteral("-bse2")}
-                     + kCommon + exclude + list.args(),
+                     + kCommon + exclude + inputs.args(),
                  QStringList{QStringLiteral("a"), QStringLiteral("-si") + tarName} + f.compressArgs + level.args
                      + QStringList{QStringLiteral("-bso0"), QStringLiteral("-bsp0"), QStringLiteral("-bse1")} + kCommon
-                     + QStringList{output},
+                     + Names(output, {}).args(),
                  req.workDir, progress);
     } else {
         QStringList args = QStringList{QStringLiteral("a")} + f.createArgs + level.args
@@ -512,7 +543,7 @@ Status SevenZipEngine::create(const CreateRequest& req, Progress* progress)
             if (req.encryptNames)
                 args << f.encryptNamesArgs;
         }
-        args << output << list.args();
+        args << outputAndInputs.args();
         r = run(args, req.workDir, passwordInput(req.password, 2), progress);
     }
     return classify(r, !req.password.isEmpty());
@@ -523,13 +554,13 @@ Status SevenZipEngine::add(const QString& archive, const Format& format, const Q
 {
     if (!format.canModify)
         return Status::fail(Error::ReadOnlyFormat, format.id);
-    const ListFile list(inputs);
     auto addTo = [&](const QString& target, const QString& pw) {
         QStringList args = QStringList{QStringLiteral("a"), QStringLiteral("-snl"), QStringLiteral("-bsp1"), QStringLiteral("-bse1")}
             + kCommon;
         if (!pw.isEmpty())
             args << QStringLiteral("-p") << format.passwordArgs;
-        args << QFileInfo(target).absoluteFilePath() << list.args();
+        const Names names(QFileInfo(target).absoluteFilePath(), inputs);
+        args << names.args();
         return classify(run(args, workDir, passwordInput(pw, 2), progress), !pw.isEmpty());
     };
     if (format.wrapsTar)
@@ -542,10 +573,10 @@ Status SevenZipEngine::remove(const QString& archive, const Format& format, cons
 {
     if (!format.canModify)
         return Status::fail(Error::ReadOnlyFormat, format.id);
-    const ListFile list(withContents(items));
     auto removeFrom = [&](const QString& target, const QString& pw) {
+        const Names names(QFileInfo(target).absoluteFilePath(), withContents(items));
         const QStringList args = QStringList{QStringLiteral("d"), QStringLiteral("-bsp1"), QStringLiteral("-bse1")} + kCommon
-            + QStringList{QFileInfo(target).absoluteFilePath()} + list.args();
+            + names.args();
         return classify(run(args, {}, passwordInput(pw, 1), progress), !pw.isEmpty());
     };
     if (format.wrapsTar)
@@ -557,7 +588,7 @@ Status SevenZipEngine::test(const QString& archive, const Format& format, const 
 {
     Q_UNUSED(format);
     const Run r = run(QStringList{QStringLiteral("t"), QStringLiteral("-bsp1"), QStringLiteral("-bse1")} + kCommon
-                          + QStringList{QFileInfo(archive).absoluteFilePath()},
+                          + Names(QFileInfo(archive).absoluteFilePath(), {}).args(),
                       {}, passwordInput(password, 1), progress);
     return classify(r, !password.isEmpty());
 }
@@ -571,7 +602,7 @@ Status SevenZipEngine::rewrapTar(const QString& archive, const Format& format, P
         return Status::fail(Error::NoAccess, fi.absolutePath());
 
     Status st = classify(run(QStringList{QStringLiteral("x"), QStringLiteral("-o") + tmp.path()} + kCommon
-                                 + QStringList{fi.absoluteFilePath()},
+                                 + Names(fi.absoluteFilePath(), {}).args(),
                              {}, {}, progress),
                          false);
     if (!st.ok())
@@ -588,7 +619,7 @@ Status SevenZipEngine::rewrapTar(const QString& archive, const Format& format, P
     const QString packed = tmp.filePath(fi.fileName());
     st = classify(run(QStringList{QStringLiteral("a")} + format.compressArgs
                           + Formats::instance().level(Formats::instance().defaultLevel()).args + kCommon
-                          + QStringList{packed, tar},
+                          + Names(packed, {tar}).args(),
                       {}, {}, progress),
                   false);
     if (!st.ok())

@@ -37,6 +37,7 @@ public:
 
 private:
     Run run(const QStringList& args, const QString& workDir, const QByteArray& input, Progress* progress) const;
+    Run runOnce(const QStringList& args, const QString& workDir, const QByteArray& input, Progress* progress) const;
     Run pipe(const QStringList& first, const QStringList& second, const QString& workDir, Progress* progress) const;
     // wrapsTar formats cannot be changed in place: unpack the .tar next to the archive, change it, pack it again.
     Status rewrapTar(const QString& archive, const Format& format, Progress* progress,
