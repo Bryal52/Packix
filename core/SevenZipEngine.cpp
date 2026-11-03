@@ -224,7 +224,8 @@ public:
             return;
         for (const QString& n : names)
             m_file.write(n.toUtf8() + '\n');
-        m_file.flush();
+        // Closed but kept: Windows does not let 7-Zip read a file that is still open here.
+        m_file.close();
         m_ok = true;
     }
     // Empty list = no argument at all (= everything).

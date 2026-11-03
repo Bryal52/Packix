@@ -29,6 +29,8 @@ public:
     static Lang& instance();
 
     QList<Info> available() const { return m_available; }
+    // Looks at the language folders again (the folder watcher is not available everywhere).
+    void rescan();
     QString current() const { return m_code; }
     bool setLanguage(const QString& code);
     QString userDir() const;

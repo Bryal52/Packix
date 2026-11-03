@@ -74,6 +74,11 @@ Lang::Lang()
     });
 }
 
+void Lang::rescan()
+{
+    scan();
+}
+
 QString Lang::userDir() const
 {
     return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/Packix/lang");

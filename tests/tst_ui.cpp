@@ -146,8 +146,9 @@ private slots:
         bad.write("{\n  \"_meta\": {\"name\": \"Broken\"},\n  \"a\": \"b\",,\n}\n");
         bad.close();
 
-        // Picked up without a restart.
-        QTRY_VERIFY_WITH_TIMEOUT(Lang::instance().available().size() >= 3, 5000);
+        // Picked up without a restart (settings and the menu look again when opened).
+        Lang::instance().rescan();
+        QVERIFY(Lang::instance().available().size() >= 3);
         bool sawBroken = false;
         for (const Lang::Info& i : Lang::instance().available()) {
             if (i.code == QLatin1String("xx")) {

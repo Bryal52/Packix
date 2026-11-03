@@ -140,7 +140,8 @@ SettingsWindow::SettingsWindow() : QWidget(nullptr, Qt::Window)
 void SettingsWindow::showEvent(QShowEvent* e)
 {
     QWidget::showEvent(e);
-    fillLanguages();   // a language file may have been added meanwhile
+    Lang::instance().rescan();   // a language file may have been added meanwhile
+    fillLanguages();
     fillPasswords();
     refreshState();
 }

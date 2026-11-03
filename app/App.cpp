@@ -233,6 +233,7 @@ void App::rebuildMenu()
     login->setChecked(platform::loginItemEnabled());
     connect(login, &QAction::toggled, this, [](bool on) { platform::setLoginItem(on); });
 
+    Lang::instance().rescan();
     QMenu* lang = m_menu->addMenu(globeIcon(), L("tray.language"));
     for (const Lang::Info& info : Lang::instance().available()) {
         QAction* a = lang->addAction(info.name);
