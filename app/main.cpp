@@ -26,7 +26,8 @@ namespace {
 
 QString instanceName()
 {
-    return QStringLiteral("Packix-") + qEnvironmentVariable("USER", qEnvironmentVariable("USERNAME"));
+    // Not "Packix-<user>": on macOS the socket lives in the temp folder, where Temp keeps a folder of that name.
+    return QStringLiteral("packix-instance-") + qEnvironmentVariable("USER", qEnvironmentVariable("USERNAME"));
 }
 
 // Hands the request to the Packix that is already running. False if there is none.

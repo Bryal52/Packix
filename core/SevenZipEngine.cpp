@@ -10,9 +10,9 @@
 #include <QSet>
 #include <QStandardPaths>
 #include <QTemporaryDir>
-#include <QTemporaryFile>
 #include <QThread>
 
+#include <atomic>
 #include <filesystem>
 
 #ifdef Q_OS_WIN
@@ -235,19 +235,31 @@ public:
         }
         if (!archive.isEmpty())
             m_args << archive;   // absolute, so it cannot look like a switch either
-        if (m_file.open()) {
+        // A plain file, closed before 7-Zip starts (Windows refuses files still open elsewhere).
+        static std::atomic_int counter{0};
+        m_file = QDir::tempPath() + QStringLiteral("/packix-list-%1-%2.txt")
+                                         .arg(QCoreApplication::applicationPid()).arg(++counter);
+        QFile f(m_file);
+        if (f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             for (const QString& n : names)
-                m_file.write(n.toUtf8() + '\n');
-            m_file.close();   // Windows: 7-Zip cannot read a file that is still open here
-            m_args << QLatin1Char('@') + m_file.fileName();
+                f.write(n.toUtf8() + '\n');
+            f.close();
+            m_args << QLatin1Char('@') + QDir::toNativeSeparators(m_file);
         }
     }
+    ~Names()
+    {
+        if (!m_file.isEmpty())
+            QFile::remove(m_file);
+    }
+    Names(const Names&) = delete;
+    Names& operator=(const Names&) = delete;
     QStringList args() const { return m_args; }
 
 private:
     static constexpr qsizetype kMaxInline = 8000;
     QStringList m_args;
-    QTemporaryFile m_file{QDir::tempPath() + QStringLiteral("/packix-list-XXXXXX.txt")};
+    QString m_file;
 };
 
 // A folder means the folder and everything in it.

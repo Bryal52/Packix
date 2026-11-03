@@ -351,7 +351,8 @@ private slots:
         QCOMPARE(read(req.destination + QStringLiteral("/-p-not-a-switch.txt")), QByteArray("x"));
 
         QString big;
-        QVERIFY(makeArchive(tmp.path(), QStringLiteral("many.7z"), QStringLiteral("7z"), many, {}, &big).ok());
+        const Status st = makeArchive(tmp.path(), QStringLiteral("many.7z"), QStringLiteral("7z"), many, {}, &big);
+        QVERIFY2(st.ok(), qPrintable(st.detail));
         QVERIFY(Archiver::open(big, {}, info).ok());
         QCOMPARE(info.fileCount(), 400);
     }
